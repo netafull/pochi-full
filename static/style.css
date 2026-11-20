@@ -1,0 +1,57 @@
+/* ポチフル — ポチシリーズ共通の骨格（新発売ポチの style.css を土台に、一覧ページ用に整理）。
+   アクセントは仮の濃い青灰（make_icons.py の COLOR と揃える）。ダークモードは変数の差し替え。 */
+:root {
+  --bg: #f6f8f9; --card: #ffffff; --text: #1f272b; --muted: #62727a;
+  --accent: #37474f; --accent-soft: #e8eef1; --line: #d9e0e4;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111618; --card: #1b2226; --text: #e8eef1; --muted: #9fb0b8;
+    --accent: #9fc0d0; --accent-soft: #26333a; --line: #34434b;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+  color: var(--text); background: var(--bg); line-height: 1.7;
+}
+a { color: var(--accent); }
+
+.site-header { max-width: 980px; margin: 0 auto; padding: 20px 16px 8px; }
+.site-title { margin: 0; font-size: 22px; font-weight: 700; line-height: 1.3; }
+.site-title a { display: inline-flex; align-items: center; gap: 8px; color: var(--text); text-decoration: none; }
+.site-title img { width: 44px; height: 44px; }
+.site-header .tagline { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+
+main { max-width: 980px; margin: 0 auto; padding: 0 16px 40px; }
+
+h2 {
+  font-size: 1.1rem; line-height: 1.4; margin: 28px 0 12px;
+  padding-left: 10px; border-left: 4px solid var(--accent);
+}
+
+/* サイトカード: カード全体がリンク。左端にそのサイトの色のアクセント */
+.pf-cards { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; grid-template-columns: 1fr; }
+@media (min-width: 700px) { .pf-cards { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 960px) { .pf-cards { grid-template-columns: 1fr 1fr 1fr; } }
+.pf-card { margin: 0; }
+.pf-card a {
+  display: flex; align-items: center; gap: 12px; height: 100%;
+  padding: 12px 14px 12px 12px; background: var(--card);
+  border: 1px solid var(--line); border-left: 6px solid var(--c, var(--accent));
+  border-radius: 12px; color: var(--text); text-decoration: none;
+}
+.pf-card a:hover { background: var(--accent-soft); border-color: var(--c, var(--accent)); }
+.pf-card a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.pf-card img { width: 48px; height: 48px; flex-shrink: 0; }
+.pf-card .pf-body { min-width: 0; }
+.pf-card .pf-name { display: block; font-weight: 700; font-size: 1rem; line-height: 1.4; }
+.pf-card .pf-desc { display: block; margin-top: 2px; font-size: 0.85rem; line-height: 1.5; color: var(--muted); overflow-wrap: anywhere; }
+
+.site-footer {
+  border-top: 1px solid var(--line); padding: 16px; font-size: 0.8rem; color: var(--muted);
+  max-width: 980px; margin: 0 auto;
+}
+.site-footer p { margin: 4px 0; }
+.site-footer a { color: var(--accent); }

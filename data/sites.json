@@ -1,0 +1,114 @@
+[
+  {
+    "key": "michinoeki",
+    "name": "道の駅ポチ",
+    "url": "https://michinoeki.netaful.jp/",
+    "group": "旅・おでかけ",
+    "description": "全国1,234駅の駐車場・設備を一次情報で確認してまとめた道の駅ガイド",
+    "color": "#2E7D32"
+  },
+  {
+    "key": "hotel",
+    "name": "ホテルポチ",
+    "url": "https://hotel.netaful.jp/",
+    "group": "旅・おでかけ",
+    "description": "空室ホテルを安い順に検索",
+    "color": "#0A8CA8"
+  },
+  {
+    "key": "onsen",
+    "name": "温泉宿ポチ",
+    "url": "https://onsen.netaful.jp/",
+    "group": "旅・おでかけ",
+    "description": "温泉地の空室を、すぐ探す。日帰り温泉の案内つき",
+    "color": "#C9971C"
+  },
+  {
+    "key": "ritou",
+    "name": "離島宿ポチ",
+    "url": "https://ritou.netaful.jp/",
+    "group": "旅・おでかけ",
+    "description": "島の空室を、すぐ探す",
+    "color": "#3AA0DD"
+  },
+  {
+    "key": "kindle",
+    "name": "電書ポチ",
+    "url": "https://book.netaful.jp/",
+    "group": "セール・買い物",
+    "description": "Kindle本のセール情報まとめ",
+    "color": "#C8322B"
+  },
+  {
+    "key": "kaden",
+    "name": "家電ポチ",
+    "url": "https://kaden.netaful.jp/",
+    "group": "セール・買い物",
+    "description": "ガジェット・家電のセールまとめ",
+    "color": "#1E8A5A"
+  },
+  {
+    "key": "apple",
+    "name": "林檎ポチ",
+    "url": "https://apple.netaful.jp/",
+    "group": "セール・買い物",
+    "description": "Apple整備済製品の在庫チェック",
+    "color": "#2B62C8"
+  },
+  {
+    "key": "shinhatsubai",
+    "name": "新発売ポチ",
+    "url": "https://shinhatsubai.netaful.jp/",
+    "group": "食べ物・新発売",
+    "description": "食ポチ5サイトの新商品を発売日でまとめてチェック",
+    "color": "#C2410C"
+  },
+  {
+    "key": "conbini",
+    "name": "コンビニポチ",
+    "url": "https://conbini.netaful.jp/",
+    "group": "食べ物・新発売",
+    "description": "コンビニ新商品アーカイブ",
+    "color": "#E0780F"
+  },
+  {
+    "key": "fastfood",
+    "name": "ファストフードポチ",
+    "url": "https://fastfood.netaful.jp/",
+    "group": "食べ物・新発売",
+    "description": "ファストフードの限定メニュー",
+    "color": "#00897B"
+  },
+  {
+    "key": "cafe",
+    "name": "カフェポチ",
+    "url": "https://cafe.netaful.jp/",
+    "group": "食べ物・新発売",
+    "description": "カフェの季節限定メニュー",
+    "color": "#6D4C41"
+  },
+  {
+    "key": "sushi",
+    "name": "回転寿司ポチ",
+    "url": "https://sushi.netaful.jp/",
+    "group": "食べ物・新発売",
+    "description": "回転寿司の期間限定ネタ",
+    "color": "#1E3A5F"
+  },
+  {
+    "key": "cupmen",
+    "name": "カップ麺ポチ",
+    "url": "https://cupmen.netaful.jp/",
+    "group": "食べ物・新発売",
+    "description": "カップ麺の新商品",
+    "color": "#C2185B"
+  },
+  {
+    "key": "manga",
+    "name": "漫画ポチ",
+    "url": "https://manga.netaful.jp/",
+    "group": "マンガ",
+    "description": "Webマンガ横断検索",
+    "color": "#6B41C4"
+  }
+]
