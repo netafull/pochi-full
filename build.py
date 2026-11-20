@@ -30,13 +30,23 @@ def groups(sites):
     return list(out.items())
 
 
+GA4_ID = "G-HF34XXVV03"
+
+
 def head(title, desc, canonical, extra=""):
     return f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- アクセス解析（GA4）を入れるときは、ここに gtag のスニペットを貼る -->
+<!-- アクセス解析（GA4、2026-11-20 マル作成のプロパティ「ポチフル」） -->
+<script async src="https://www.googletagmanager.com/gtag/js?id={GA4_ID}"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){{dataLayer.push(arguments);}}
+gtag('js', new Date());
+gtag('config', '{GA4_ID}');
+</script>
 <title>{escape(title)}</title>
 <meta name="description" content="{escape(desc)}">
 <link rel="canonical" href="{canonical}">
