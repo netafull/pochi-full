@@ -1,0 +1,18 @@
+{
+ "version": 1,
+ "site": "apple",
+ "site_name": "林檎ポチ",
+ "site_url": "https://apple.netaful.jp/",
+ "generated": "{D+0}T05:55:00+09:00",
+ "items": [
+  {
+   "id": "apple:a1",
+   "title": "MacBook Air 13インチ 整備済",
+   "url": "https://apple.netaful.jp/x/a1/",
+   "date": "{D+0}",
+   "source": "apple",
+   "source_name": "林檎ポチ",
+   "note": "在庫あり ¥98,800"
+  }
+ ]
+}

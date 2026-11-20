@@ -1,0 +1,39 @@
+{
+ "version": 1,
+ "site": "book",
+ "site_name": "電書ポチ",
+ "site_url": "https://book.netaful.jp/",
+ "generated": "{D+0}T05:55:00+09:00",
+ "items": [
+  {
+   "id": "book:b1",
+   "title": "超有名マンガ 全巻セット",
+   "url": "https://book.netaful.jp/x/b1/",
+   "date": "{D+0}",
+   "source": "book",
+   "source_name": "電書ポチ",
+   "note": "50%OFF ¥1,980",
+   "image": "https://m.media-amazon.com/images/I/sample.jpg",
+   "image_link": "https://www.amazon.co.jp/dp/b1?tag=sample-22"
+  },
+  {
+   "id": "shinkan:dup1",
+   "title": "重複のはず",
+   "url": "https://shinkan.netaful.jp/x/dup1/",
+   "date": "{D+0}",
+   "source": "shinkan",
+   "source_name": "マンガ新刊ポチ"
+  },
+  {
+   "id": "shinkan:9784012",
+   "title": "盤上のオリオン 12巻",
+   "url": "https://shinkan.netaful.jp/x/9784012/",
+   "date": "{D+1}",
+   "source": "shinkan",
+   "source_name": "マンガ新刊ポチ",
+   "note": "明日発売",
+   "image": "https://m.media-amazon.com/images/I/sample.jpg",
+   "image_link": "https://www.amazon.co.jp/dp/9784012?tag=sample-22"
+  }
+ ]
+}

@@ -1,0 +1,75 @@
+{
+ "version": 1,
+ "site": "shinkan",
+ "site_name": "マンガ新刊ポチ",
+ "site_url": "https://shinkan.netaful.jp/",
+ "generated": "{D+0}T05:55:00+09:00",
+ "items": [
+  {
+   "id": "shinkan:9784012",
+   "title": "盤上のオリオン 12巻",
+   "url": "https://shinkan.netaful.jp/x/9784012/",
+   "date": "{D+1}",
+   "source": "shinkan",
+   "source_name": "マンガ新刊ポチ",
+   "note": "明日発売",
+   "image": "https://m.media-amazon.com/images/I/sample.jpg",
+   "image_link": "https://www.amazon.co.jp/dp/9784012?tag=sample-22"
+  },
+  {
+   "id": "shinkan:978403",
+   "title": "盤上のオリオン 3巻",
+   "url": "https://shinkan.netaful.jp/x/978403/",
+   "date": "{D+0}",
+   "source": "shinkan",
+   "source_name": "マンガ新刊ポチ",
+   "note": "発売中",
+   "image": "https://m.media-amazon.com/images/I/sample.jpg",
+   "image_link": "https://www.amazon.co.jp/dp/978403?tag=sample-22"
+  },
+  {
+   "id": "shinkan:978404",
+   "title": "盤上のオリオン 4巻",
+   "url": "https://shinkan.netaful.jp/x/978404/",
+   "date": "{D+0}",
+   "source": "shinkan",
+   "source_name": "マンガ新刊ポチ",
+   "note": "発売中",
+   "image": "https://m.media-amazon.com/images/I/sample.jpg",
+   "image_link": "https://www.amazon.co.jp/dp/978404?tag=sample-22"
+  },
+  {
+   "id": "shinkan:978405",
+   "title": "盤上のオリオン 5巻",
+   "url": "https://shinkan.netaful.jp/x/978405/",
+   "date": "{D+0}",
+   "source": "shinkan",
+   "source_name": "マンガ新刊ポチ",
+   "note": "発売中",
+   "image": "https://m.media-amazon.com/images/I/sample.jpg",
+   "image_link": "https://www.amazon.co.jp/dp/978405?tag=sample-22"
+  },
+  {
+   "id": "shinkan:978406",
+   "title": "盤上のオリオン 6巻",
+   "url": "https://shinkan.netaful.jp/x/978406/",
+   "date": "{D-1}",
+   "source": "shinkan",
+   "source_name": "マンガ新刊ポチ",
+   "note": "明日発売",
+   "image": "https://m.media-amazon.com/images/I/sample.jpg",
+   "image_link": "https://www.amazon.co.jp/dp/978406?tag=sample-22"
+  },
+  {
+   "id": "shinkan:978407",
+   "title": "盤上のオリオン 7巻",
+   "url": "https://shinkan.netaful.jp/x/978407/",
+   "date": "{D-9}",
+   "source": "shinkan",
+   "source_name": "マンガ新刊ポチ",
+   "note": "明日発売",
+   "image": "https://m.media-amazon.com/images/I/sample.jpg",
+   "image_link": "https://www.amazon.co.jp/dp/978407?tag=sample-22"
+  }
+ ]
+}

@@ -37,6 +37,11 @@ gtag('config', 'G-HF34XXVV03');
 <p class="tagline">ネタフルのポチシリーズ全15サイトをまとめて見られる一覧ページ</p>
 </header>
 <main>
+<div class="pf-tabs" id="pf-tabs" role="tablist" aria-label="表示の切り替え" hidden>
+<button type="button" role="tab" class="pf-tab" id="tab-links" data-view="links" aria-selected="true" aria-controls="view-links">リンク集</button>
+<button type="button" role="tab" class="pf-tab" id="tab-dash" data-view="dash" aria-selected="false" aria-controls="view-dash" tabindex="-1">ダッシュボード</button>
+</div>
+<div id="view-links" role="tabpanel" aria-labelledby="tab-links">
 <section><h2>旅・おでかけ</h2><ul class="pf-cards">
 <li class="pf-card"><a href="https://michinoeki.netaful.jp/" style="--c:#2E7D32"><img src="/static/icons/michinoeki.png" alt="" width="48" height="48" loading="lazy" decoding="async"><span class="pf-body"><span class="pf-name">道の駅ポチ</span><span class="pf-desc">全国1,234駅の駐車場・設備をまとめた道の駅ガイド</span></span></a></li>
 <li class="pf-card"><a href="https://hotel.netaful.jp/" style="--c:#0A8CA8"><img src="/static/icons/hotel.png" alt="" width="48" height="48" loading="lazy" decoding="async"><span class="pf-body"><span class="pf-name">ホテルポチ</span><span class="pf-desc">空室ホテルを安い順に検索</span></span></a></li>
@@ -60,10 +65,28 @@ gtag('config', 'G-HF34XXVV03');
 <li class="pf-card"><a href="https://manga.netaful.jp/" style="--c:#6B41C4"><img src="/static/icons/manga.png" alt="" width="48" height="48" loading="lazy" decoding="async"><span class="pf-body"><span class="pf-name">漫画ポチ</span><span class="pf-desc">Webマンガ横断検索</span></span></a></li>
 <li class="pf-card"><a href="https://shinkan.netaful.jp/" style="--c:#5E35B1"><img src="/static/icons/shinkan.png" alt="" width="48" height="48" loading="lazy" decoding="async"><span class="pf-body"><span class="pf-name">マンガ新刊ポチ</span><span class="pf-desc">コミック新刊の発売日を、まとめてチェック</span></span></a></li>
 </ul></section>
+</div>
+<div id="view-dash" role="tabpanel" aria-labelledby="tab-dash" data-feeds="[&quot;https://shinkan.netaful.jp/feed.json&quot;, &quot;https://shinhatsubai.netaful.jp/feed.json&quot;, &quot;https://book.netaful.jp/feed.json&quot;, &quot;https://kaden.netaful.jp/feed.json&quot;, &quot;https://apple.netaful.jp/feed.json&quot;]" hidden>
+<h2 class="dash-h">最近の新着</h2>
+<div class="pf-chips" role="group" aria-label="表示するポチ">
+<button type="button" class="pf-chip" data-source="shinkan" data-name="マンガ新刊ポチ" data-color="#5E35B1" data-icon="/static/icons/shinkan.png" aria-pressed="true" style="--c:#5E35B1"><img src="/static/icons/shinkan.png" alt="" width="20" height="20" loading="lazy" decoding="async">マンガ新刊ポチ</button>
+<button type="button" class="pf-chip" data-source="conbini" data-name="コンビニポチ" data-color="#E0780F" data-icon="/static/icons/conbini.png" aria-pressed="true" style="--c:#E0780F"><img src="/static/icons/conbini.png" alt="" width="20" height="20" loading="lazy" decoding="async">コンビニポチ</button>
+<button type="button" class="pf-chip" data-source="fastfood" data-name="ファストフードポチ" data-color="#00897B" data-icon="/static/icons/fastfood.png" aria-pressed="true" style="--c:#00897B"><img src="/static/icons/fastfood.png" alt="" width="20" height="20" loading="lazy" decoding="async">ファストフードポチ</button>
+<button type="button" class="pf-chip" data-source="cafe" data-name="カフェポチ" data-color="#6D4C41" data-icon="/static/icons/cafe.png" aria-pressed="true" style="--c:#6D4C41"><img src="/static/icons/cafe.png" alt="" width="20" height="20" loading="lazy" decoding="async">カフェポチ</button>
+<button type="button" class="pf-chip" data-source="sushi" data-name="回転寿司ポチ" data-color="#1E3A5F" data-icon="/static/icons/sushi.png" aria-pressed="true" style="--c:#1E3A5F"><img src="/static/icons/sushi.png" alt="" width="20" height="20" loading="lazy" decoding="async">回転寿司ポチ</button>
+<button type="button" class="pf-chip" data-source="cupmen" data-name="カップ麺ポチ" data-color="#C2185B" data-icon="/static/icons/cupmen.png" aria-pressed="true" style="--c:#C2185B"><img src="/static/icons/cupmen.png" alt="" width="20" height="20" loading="lazy" decoding="async">カップ麺ポチ</button>
+<button type="button" class="pf-chip" data-source="book" data-name="電書ポチ" data-color="#C8322B" data-icon="/static/icons/kindle.png" aria-pressed="true" style="--c:#C8322B"><img src="/static/icons/kindle.png" alt="" width="20" height="20" loading="lazy" decoding="async">電書ポチ</button>
+<button type="button" class="pf-chip" data-source="kaden" data-name="家電ポチ" data-color="#1E8A5A" data-icon="/static/icons/kaden.png" aria-pressed="true" style="--c:#1E8A5A"><img src="/static/icons/kaden.png" alt="" width="20" height="20" loading="lazy" decoding="async">家電ポチ</button>
+<button type="button" class="pf-chip" data-source="apple" data-name="林檎ポチ" data-color="#2B62C8" data-icon="/static/icons/apple.png" aria-pressed="true" style="--c:#2B62C8"><img src="/static/icons/apple.png" alt="" width="20" height="20" loading="lazy" decoding="async">林檎ポチ</button>
+</div>
+<p class="dash-status" id="dash-status" role="status" hidden></p>
+<ul class="dash-list" id="dash-list"></ul>
+</div>
 </main>
 <footer class="site-footer">
 <p><a href="https://www.netaful.jp/">ネタフル</a>（https://www.netaful.jp/）が運営</p>
 <p>&copy; 2026 ネタフル</p>
 </footer>
+<script src="/static/dashboard.js" defer></script>
 </body>
 </html>
