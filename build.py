@@ -115,7 +115,7 @@ def card(s):
 # JS が無いときは出さない（hidden のまま）。リンク集ビューだけの今のページになる
 TABS = """<div class="pf-tabs" id="pf-tabs" role="tablist" aria-label="表示の切り替え" hidden>
 <button type="button" role="tab" class="pf-tab" id="tab-links" data-view="links" aria-selected="true" aria-controls="view-links">リンク集</button>
-<button type="button" role="tab" class="pf-tab" id="tab-dash" data-view="dash" aria-selected="false" aria-controls="view-dash" tabindex="-1">新着</button>
+<button type="button" role="tab" class="pf-tab" id="tab-dash" data-view="dash" aria-selected="false" aria-controls="view-dash" tabindex="-1">ダッシュボード</button>
 </div>
 """
 
