@@ -175,11 +175,6 @@ if (typeof document !== 'undefined') (function () {
       status.hidden = false;
       status.textContent = '';
       status.appendChild(document.createTextNode(mixed.length ? '選んだポチの新着はまだありません。' : '新着はまだありません。'));
-      status.appendChild(document.createTextNode(' '));
-      var back = el('a', null, 'リンク集から各ポチを見る');
-      back.href = '#links';
-      back.addEventListener('click', function (e) { e.preventDefault(); show('links', true); });
-      status.appendChild(back);
       return;
     }
     status.hidden = true;
