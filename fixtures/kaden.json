@@ -1,0 +1,20 @@
+{
+ "version": 1,
+ "site": "kaden",
+ "site_name": "家電ポチ",
+ "site_url": "https://kaden.netaful.jp/",
+ "generated": "{D+0}T05:55:00+09:00",
+ "items": [
+  {
+   "id": "kaden:k1",
+   "title": "ワイヤレスイヤホン",
+   "url": "https://kaden.netaful.jp/p/k1/",
+   "date": "{D-1}",
+   "source": "kaden",
+   "source_name": "家電ポチ",
+   "note": "20%OFF ¥9,800",
+   "image": "https://m.media-amazon.com/images/I/sample.jpg",
+   "image_link": "https://www.amazon.co.jp/dp/k1?tag=sample-22"
+  }
+ ]
+}

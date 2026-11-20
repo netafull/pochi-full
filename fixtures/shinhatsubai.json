@@ -1,0 +1,71 @@
+{
+ "version": 1,
+ "site": "shinhatsubai",
+ "site_name": "新発売ポチ",
+ "site_url": "https://shinhatsubai.netaful.jp/",
+ "generated": "{D+0}T05:55:00+09:00",
+ "items": [
+  {
+   "id": "conbini:c1",
+   "title": "新作おにぎり",
+   "url": "https://conbini.netaful.jp/x/c1/",
+   "date": "{D+0}",
+   "source": "conbini",
+   "source_name": "コンビニポチ",
+   "icon": "/static/icons/conbini.png"
+  },
+  {
+   "id": "conbini:c2",
+   "title": "生クリーム大福",
+   "url": "https://conbini.netaful.jp/x/c2/",
+   "date": "{D+0}",
+   "source": "conbini",
+   "source_name": "コンビニポチ",
+   "icon": "/static/icons/conbini.png"
+  },
+  {
+   "id": "conbini:c3",
+   "title": "濃厚プリン",
+   "url": "https://conbini.netaful.jp/x/c3/",
+   "date": "{D+0}",
+   "source": "conbini",
+   "source_name": "コンビニポチ",
+   "icon": "/static/icons/conbini.png"
+  },
+  {
+   "id": "fastfood:f1",
+   "title": "月見バーガー",
+   "url": "https://fastfood.netaful.jp/x/f1/",
+   "date": "{D-1}",
+   "source": "fastfood",
+   "source_name": "ファストフードポチ",
+   "icon": "/static/icons/conbini.png"
+  },
+  {
+   "id": "cafe:k1",
+   "title": "いちごフラペチーノ",
+   "url": "https://cafe.netaful.jp/x/k1/",
+   "date": "{D-2}",
+   "source": "cafe",
+   "source_name": "カフェポチ"
+  },
+  {
+   "id": "cupmen:m1",
+   "title": "辛旨ラーメン",
+   "url": "https://cupmen.netaful.jp/x/m1/",
+   "date": "{D-3}",
+   "source": "cupmen",
+   "source_name": "カップ麺ポチ",
+   "icon": "/static/icons/conbini.png"
+  },
+  {
+   "id": "sushi:s1",
+   "title": "本まぐろ祭り",
+   "url": "https://sushi.netaful.jp/x/s1/",
+   "date": "{D-4}",
+   "source": "sushi",
+   "source_name": "回転寿司ポチ",
+   "icon": "/static/icons/conbini.png"
+  }
+ ]
+}

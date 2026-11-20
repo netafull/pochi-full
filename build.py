@@ -35,6 +35,20 @@ def groups(sites):
 
 GA4_ID = "G-HF34XXVV03"
 
+# ダッシュボード（feed-spec.md）。チップの source キー → sites.json の key（電書ポチだけ違う）
+CHIPS = [
+    ("shinkan", "shinkan"), ("conbini", "conbini"), ("fastfood", "fastfood"), ("cafe", "cafe"),
+    ("sushi", "sushi"), ("cupmen", "cupmen"), ("book", "kindle"), ("kaden", "kaden"), ("apple", "apple"),
+]
+# 読みに行く feed。食ポチ5サイトは新発売ポチの feed にまとまっている
+FEEDS = [
+    "https://shinkan.netaful.jp/feed.json",
+    "https://shinhatsubai.netaful.jp/feed.json",
+    "https://book.netaful.jp/feed.json",
+    "https://kaden.netaful.jp/feed.json",
+    "https://apple.netaful.jp/feed.json",
+]
+
 
 def head(title, desc, canonical, extra=""):
     return f"""<!DOCTYPE html>
@@ -98,6 +112,38 @@ def card(s):
     )
 
 
+# JS が無いときは出さない（hidden のまま）。リンク集ビューだけの今のページになる
+TABS = """<div class="pf-tabs" id="pf-tabs" role="tablist" aria-label="表示の切り替え" hidden>
+<button type="button" role="tab" class="pf-tab" id="tab-links" data-view="links" aria-selected="true" aria-controls="view-links">リンク集</button>
+<button type="button" role="tab" class="pf-tab" id="tab-dash" data-view="dash" aria-selected="false" aria-controls="view-dash" tabindex="-1">ダッシュボード</button>
+</div>
+"""
+
+
+def chip(source, s):
+    icon = f"/static/icons/{s['key']}.png"
+    return (
+        f'<button type="button" class="pf-chip" data-source="{source}" data-name="{escape(s["name"])}" '
+        f'data-color="{escape(s["color"])}" data-icon="{icon}" aria-pressed="true" style="--c:{escape(s["color"])}">'
+        f'<img src="{icon}" alt="" width="20" height="20" loading="lazy" decoding="async">{escape(s["name"])}</button>'
+    )
+
+
+def dashboard(sites):
+    by_key = {s["key"]: s for s in sites}
+    chips = "\n".join(chip(src, by_key[key]) for src, key in CHIPS)
+    feeds = escape(json.dumps(FEEDS), quote=True)
+    return f"""<div id="view-dash" role="tabpanel" aria-labelledby="tab-dash" data-feeds="{feeds}" hidden>
+<h2 class="dash-h">最近の新着</h2>
+<div class="pf-chips" role="group" aria-label="表示するポチ">
+{chips}
+</div>
+<p class="dash-status" id="dash-status" role="status" hidden></p>
+<ul class="dash-list" id="dash-list"></ul>
+</div>
+"""
+
+
 def build_index(sites):
     n = len(sites)
     desc = f"ネタフルのポチシリーズ全{n}サイトをまとめて見られる一覧ページ。旅・おでかけ、セール・買い物、食べ物・新発売、マンガのポチをここから探せます。"
@@ -116,12 +162,14 @@ def build_index(sites):
         f'<script type="application/ld+json">{json.dumps(d, ensure_ascii=False, separators=(",", ":"))}</script>\n'
         for d in ld
     )
-    parts = [head(TITLE, desc, BASE, extra), header("h1").replace("{n}", str(n)), "<main>\n"]
+    parts = [head(TITLE, desc, BASE, extra), header("h1").replace("{n}", str(n)), "<main>\n", TABS,
+             '<div id="view-links" role="tabpanel" aria-labelledby="tab-links">\n']
     for g, items in groups(sites):
         parts.append(f'<section><h2>{escape(g)}</h2><ul class="pf-cards">\n')
         parts.extend(card(s) + "\n" for s in items)
         parts.append("</ul></section>\n")
-    parts.append("</main>\n" + FOOTER)
+    parts.append("</div>\n" + dashboard(sites))
+    parts.append("</main>\n" + FOOTER.replace("</body>", '<script src="/static/dashboard.js" defer></script>\n</body>'))
     return "".join(parts)
 
 
@@ -145,6 +193,7 @@ def main():
             sys.exit(f"アイコンがありません: {src}（pochi-branding で作ってから再実行）")
         shutil.copy2(src, DOCS / f"static/icons/{s['key']}.png")
     shutil.copy2(ROOT / "static/style.css", DOCS / "static/style.css")
+    shutil.copy2(ROOT / "static/dashboard.js", DOCS / "static/dashboard.js")
     (DOCS / "index.html").write_text(build_index(sites), encoding="utf-8")
     (DOCS / "404.html").write_text(build_404(len(sites)), encoding="utf-8")
     (DOCS / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {BASE}sitemap.xml\n", encoding="utf-8")
