@@ -110,5 +110,14 @@
     "group": "マンガ",
     "description": "Webマンガ横断検索",
     "color": "#6B41C4"
+  },
+  {
+    "key": "shinkan",
+    "name": "マンガ新刊ポチ",
+    "url": "https://shinkan.netaful.jp/",
+    "group": "マンガ",
+    "description": "コミック新刊の発売日を、まとめてチェック",
+    "color": "#5E35B1",
+    "icon": "manga-shinkan-pochi/static/assets/logo.png"
   }
 ]

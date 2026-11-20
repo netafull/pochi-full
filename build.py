@@ -12,6 +12,9 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 DOCS = ROOT / "docs"
 BRANDING_BUILD = Path.home() / "Desktop/Claude/pochi-branding/build"
+# sites.json の "icon" に ~/Desktop/Claude からの相対パスを書くと、pochi-branding の代わりにそのPNGを使う
+# （pochi-branding に載せないサイト用。例: マンガ新刊ポチは自サイトの static/assets/logo.png）
+SITE_ROOT = Path.home() / "Desktop/Claude"
 
 BASE = "https://pochi.netaful.jp/"
 TITLE = "ポチフル｜ネタフルのポチシリーズ一覧"
@@ -137,7 +140,7 @@ def main():
     sites = load_sites()
     (DOCS / "static/icons").mkdir(parents=True, exist_ok=True)
     for s in sites:
-        src = BRANDING_BUILD / s["key"] / "logo.png"
+        src = SITE_ROOT / s["icon"] if s.get("icon") else BRANDING_BUILD / s["key"] / "logo.png"
         if not src.exists():
             sys.exit(f"アイコンがありません: {src}（pochi-branding で作ってから再実行）")
         shutil.copy2(src, DOCS / f"static/icons/{s['key']}.png")
