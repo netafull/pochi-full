@@ -66,7 +66,7 @@ class HtmlTest(unittest.TestCase):
     def test_chips(self):
         chips = re.findall(r'class="pf-chip" data-source="([a-z]+)"', self.html)
         self.assertEqual(chips, ["shinkan", "conbini", "fastfood", "cafe", "sushi", "cupmen", "book", "kaden", "apple",
-                                 "netaful", "manga"])
+                                 "manga", "netaful"])  # ネタフルは最後（オーナー意向）
         self.assertNotIn('data-source="michinoeki"', self.html)  # 道の駅ポチはディスカバーから外した（オーナー決定 2026-11-21）
         for k in ("netaful", "manga"):  # 新しいものも既定でオン
             self.assertRegex(self.html, rf'data-source="{k}"[^>]*aria-pressed="true"')

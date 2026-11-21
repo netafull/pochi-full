@@ -99,7 +99,9 @@ h2 {
 .dc-body { min-width: 0; flex: 1; }
 .dc-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 0; font-size: 0.78rem; color: var(--muted); }
 .dc-badge { padding: 0 8px; color: #fff; background: var(--c, var(--accent)); border-radius: 999px; font-weight: 700; line-height: 1.6; }
-.dc-title { margin: 4px 0 0; font-size: 0.98rem; line-height: 1.5; overflow-wrap: anywhere; }
+/* 家電・林檎は Amazon の商品名がそのまま入って長いので、題名は2行までで省略記号（オーナー意向 2026-11-21） */
+.dc-title { margin: 4px 0 0; font-size: 0.98rem; line-height: 1.5; overflow-wrap: anywhere;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
 .dc-title a { color: var(--text); }
 .dc-note { margin: 2px 0 0; font-size: 0.85rem; line-height: 1.5; color: var(--muted); overflow-wrap: anywhere; }
 .dash-h { margin-top: 20px; }

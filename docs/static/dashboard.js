@@ -12,7 +12,7 @@ var PochiDash = (function () {
   // 巡回の帯の幅（日）。近い日付どうしは混ぜてよい（オーナー意向 2026-11-21）。今日・昨日（と未来日付）が1つ目の帯、2〜3日前が2つ目。
   var BAND_DAYS = 2;
   // 同じ帯の中で source を順番に1枚ずつ出すときの巡回順（チップの並びと同じ。固定なので結果は毎回同じ）。ここに無い source は後ろに初出順。
-  var SOURCE_ORDER = ['shinkan', 'conbini', 'fastfood', 'cafe', 'sushi', 'cupmen', 'book', 'kaden', 'apple', 'netaful', 'manga'];
+  var SOURCE_ORDER = ['shinkan', 'conbini', 'fastfood', 'cafe', 'sushi', 'cupmen', 'book', 'kaden', 'apple', 'manga', 'netaful'];
 
   function pad(n) { return (n < 10 ? '0' : '') + n; }
   // 今日（JST）を YYYY-MM-DD で返す
@@ -219,6 +219,7 @@ if (typeof document !== 'undefined') (function () {
     var h = el('h3', 'dc-title');
     var a = el('a', null, it.title);
     a.href = it.url;
+    a.title = it.title; // 2行で切れたときの全文（カーソルを載せると出る）
     h.appendChild(a);
     body.appendChild(h);
     if (it.note) body.appendChild(el('p', 'dc-note', it.note));
