@@ -24,7 +24,9 @@ var out = {
   today: D.jstToday(C.nowMs),
   mixed: D.mix(C.feeds, C.today).map(function (i) { return i.id; }),
   spread: D.spread(C.seq).map(function (i) { return i.id; }),
-  visible: D.visible(C.seq, C.off).map(function (i) { return i.id; })
+  visible: D.visible(C.seq, C.off).map(function (i) { return i.id; }),
+  wp: D.fromWp(C.wp),
+  decoded: (C.titles || []).map(function (t) { return D.decodeTitle(t); })
 };
 JSON.stringify(out);
 """
@@ -63,12 +65,28 @@ class HtmlTest(unittest.TestCase):
 
     def test_chips(self):
         chips = re.findall(r'class="pf-chip" data-source="([a-z]+)"', self.html)
-        self.assertEqual(chips, ["shinkan", "conbini", "fastfood", "cafe", "sushi", "cupmen", "book", "kaden", "apple"])
+        self.assertEqual(chips, ["shinkan", "conbini", "fastfood", "cafe", "sushi", "cupmen", "book", "kaden", "apple",
+                                 "netaful", "manga", "michinoeki"])
+        for k in ("netaful", "manga", "michinoeki"):  # 新しい3つも既定でオン
+            self.assertRegex(self.html, rf'data-source="{k}"[^>]*aria-pressed="true"')
+
+    def test_heading_and_wp_url(self):
+        self.assertIn('<h2 class="dash-h">ポチフルディスカバー</h2>', self.html)
+        self.assertNotIn("最近の新着", self.html)
+        self.assertIn("https://netaful.jp/wp-json/wp/v2/posts?tags=728&amp;per_page=20", self.html)
+
+    def test_fallback_logos_exist(self):
+        for k in ("manga", "michinoeki"):
+            self.assertIn(f'data-source="{k}"', self.html)
+            self.assertIn(f'data-icon="/static/icons/{k}.png"', self.html)
+            self.assertTrue((ROOT / f"docs/static/icons/{k}.png").is_file())
 
     def test_feeds(self):
         m = re.search(r'data-feeds="([^"]+)"', self.html)
         feeds = json.loads(m[1].replace("&quot;", '"'))
-        self.assertEqual(len(feeds), 5)
+        self.assertEqual(len(feeds), 7)
+        self.assertIn("https://manga.netaful.jp/feed.json", feeds)
+        self.assertIn("https://michinoeki.netaful.jp/feed.json", feeds)
         self.assertTrue(all(re.match(r"^https://[a-z]+\.netaful\.jp/feed\.json$", f) for f in feeds))
 
     def test_links_view_unchanged_markup(self):
@@ -83,6 +101,9 @@ class HtmlTest(unittest.TestCase):
     def test_fixtures_valid(self):
         for f in (ROOT / "fixtures").glob("*.json"):
             d = json.loads(f.read_text(encoding="utf-8"))
+            if f.stem == "netaful":  # WordPress REST の配列（feed ではない）
+                self.assertIsInstance(d, list)
+                continue
             self.assertEqual(d["version"], 1)
             ids = [i["id"] for i in d["items"]]
             self.assertEqual(len(ids), len(set(ids)) if f.stem != "book" else len(ids))
@@ -97,7 +118,7 @@ class LogicTest(unittest.TestCase):
         self.addCleanup(self._t.cleanup)
 
     def run_case(self, **kw):
-        base = {"nowMs": 0, "today": "2026-11-20", "feeds": [], "seq": [], "off": []}
+        base = {"nowMs": 0, "today": "2026-11-20", "feeds": [], "seq": [], "off": [], "wp": [], "titles": []}
         base.update(kw)
         return run_js(base, self.tmp)
 
@@ -114,8 +135,34 @@ class LogicTest(unittest.TestCase):
         f2 = {"generated": "2026-11-20T09:00:00+09:00", "items": [
             it("b1", "b", "2026-11-20"), it("a1", "b", "2026-11-20"), it("old", "b", "2026-11-01")]}
         r = self.run_case(feeds=[f1, f2])["mixed"]
-        # 未来が先頭、同日は generated が新しい feed が先、重複a1は最初のものだけ、3日より古い(11-16, 11-01)は捨てる
-        self.assertEqual(r, ["fut", "b1", "a1", "a2"])
+        # 未来が先頭、同日は source を順番に1枚ずつ（a→b）、重複a1は最初のものだけ、3日より古い(11-16, 11-01)は捨てる
+        self.assertEqual(r, ["fut", "a1", "b1", "a2"])
+
+    def test_mix_round_robin_same_date(self):
+        # 同じ日は source を固定順（チップ順: shinkan, book, kaden, apple）に1枚ずつ。各 source 内は元の順。feed の generated は関係ない
+        late = {"generated": "2026-11-20T09:00:00+09:00", "items": [
+            it("k1", "kaden", "2026-11-20"), it("k2", "kaden", "2026-11-20"), it("p1", "apple", "2026-11-20")]}
+        early = {"generated": "2026-11-20T05:00:00+09:00", "items": [
+            it("s1", "shinkan", "2026-11-20"), it("s2", "shinkan", "2026-11-20"), it("s3", "shinkan", "2026-11-20"),
+            it("b1", "book", "2026-11-20")]}
+        r = self.run_case(feeds=[late, early])["mixed"]
+        self.assertEqual(r, ["s1", "b1", "k1", "p1", "s2", "k2", "s3"])
+        self.assertEqual(r, self.run_case(feeds=[early, late])["mixed"])  # feed の順を入れ替えても同じ
+
+    def test_mix_date_beats_round_robin(self):
+        f = {"generated": "2026-11-20T05:00:00+09:00", "items": [
+            it("s_old", "shinkan", "2026-11-19"), it("s_new", "shinkan", "2026-11-20"), it("s_new2", "shinkan", "2026-11-20"),
+            it("c_old", "conbini", "2026-11-18"), it("c_new", "conbini", "2026-11-20")]}
+        r = self.run_case(feeds=[f])["mixed"]
+        self.assertEqual(r, ["s_new", "c_new", "s_new2", "s_old", "c_old"])
+
+    def test_mix_caps_with_round_robin(self):
+        # 上限は「新しいほうから6件」を先に決め、その6件を巡回に回す（古い日の枠を新しい日が取る）
+        k = [it(f"k{i}", "kaden", "2026-11-20" if i < 2 else "2026-11-19") for i in range(10)]
+        s = [it(f"s{i}", "shinkan", "2026-11-19") for i in range(3)]
+        r = self.run_case(feeds=[{"generated": "", "items": k + s}])["mixed"]
+        self.assertEqual([x for x in r if x.startswith("k")], [f"k{i}" for i in range(6)])
+        self.assertEqual(r, ["k0", "k1", "s0", "k2", "s1", "k3", "s2", "k4", "k5"])
 
     def test_mix_caps_kaden_apple(self):
         # 家電・林檎は新しいほうから6件まで。他の source は上限なし
@@ -127,6 +174,35 @@ class LogicTest(unittest.TestCase):
         self.assertEqual([x for x in r if x.startswith("k")], [f"k{i}" for i in range(6)])
         self.assertEqual([x for x in r if x.startswith("p")], [f"p{i}" for i in range(6)])
         self.assertEqual(len([x for x in r if x.startswith("s")]), 9)
+
+    def test_netaful_wp_conversion(self):
+        posts = [
+            {"id": 7, "date": "2026-11-20T07:30:12", "link": "https://netaful.jp/archives/7",
+             "title": {"rendered": "A &#8211; B &#038; C &amp; D &#8217;E&#8217; &lt;b&gt; &hellip; &#x1F363;"},
+             "jetpack_featured_media_url": "https://netaful.jp/wp-content/x.jpg"},
+            {"id": 8, "date": "2026-11-19T23:59:59", "link": "https://netaful.jp/archives/8",
+             "title": {"rendered": "<em>画像</em>なし"}, "jetpack_featured_media_url": ""},
+            {"id": 9, "date": "2026-11-19T00:00:00", "link": "javascript:alert(1)", "title": {"rendered": "壊れ"}},
+            {"id": 10, "date": "2026-11-19T00:00:00", "link": "https://netaful.jp/archives/10", "title": {"rendered": ""}},
+        ]
+        f = self.run_case(wp=posts)["wp"]
+        self.assertEqual((f["site"], f["site_name"], f["version"]), ("netaful", "ネタフル", 1))
+        self.assertEqual(len(f["items"]), 2)  # http でない link と空タイトルは捨てる
+        a, b = f["items"]
+        self.assertEqual(a, {"id": "netaful:7", "title": "A \u2013 B & C & D \u2019E\u2019 <b> \u2026 \U0001F363",
+                             "url": "https://netaful.jp/archives/7", "date": "2026-11-20", "source": "netaful",
+                             "source_name": "ネタフル", "image": "https://netaful.jp/wp-content/x.jpg"})
+        self.assertNotIn("image_link", a)
+        self.assertEqual(b["title"], "画像なし")
+        self.assertNotIn("image", b)
+        self.assertEqual(b["date"], "2026-11-19")
+        # 変換後の feed はそのまま mix に流せる
+        m = self.run_case(feeds=[f], today="2026-11-20")["mixed"]
+        self.assertEqual(m, ["netaful:7", "netaful:8"])
+
+    def test_decode_title_single_pass(self):
+        r = self.run_case(titles=["&amp;lt;", "&#0;&#xD800;&unknown;", "a  b\n"])["decoded"]
+        self.assertEqual(r, ["&lt;", "&#0;&#xD800;&unknown;", "a b"])
 
     def test_spread(self):
         seq = [it(f"x{i}", "x", "2026-11-20") for i in range(1, 5)] + [it("y1", "y", "2026-11-20"), it("z1", "z", "2026-11-20")]

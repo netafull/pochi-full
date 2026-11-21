@@ -1,0 +1,20 @@
+[
+ {
+  "id": 101,
+  "date": "{D+0}T07:30:00",
+  "link": "https://netaful.jp/archives/101",
+  "title": {
+   "rendered": "サンプル&#8211;食レポ &#038; 新作 &#8217;限定&#8217;"
+  },
+  "jetpack_featured_media_url": "https://netaful.jp/wp-content/uploads/sample.jpg"
+ },
+ {
+  "id": 102,
+  "date": "{D-1}T12:00:00",
+  "link": "https://netaful.jp/archives/102",
+  "title": {
+   "rendered": "画像なしの記事"
+  },
+  "jetpack_featured_media_url": ""
+ }
+]

@@ -26,7 +26,10 @@ class H(SimpleHTTPRequestHandler):
             ctype = "application/json"
         elif p in ("/", "/index.html"):
             html = (DOCS / "index.html").read_text(encoding="utf-8")
-            body = re.sub(r"https://([a-z]+)\.netaful\.jp/feed\.json", r"/fixtures/\1.json", html).encode()
+            html = re.sub(r"https://([a-z]+)\.netaful\.jp/feed\.json", r"/fixtures/\1.json", html)
+            # ネタフルの WordPress REST（data-wp）も fixtures/netaful.json に差し替える
+            html = re.sub(r"https://netaful\.jp/wp-json/wp/v2/posts\?[^\"]*", "/fixtures/netaful.json", html)
+            body = html.encode()
             ctype = "text/html; charset=utf-8"
         else:
             return super().do_GET()

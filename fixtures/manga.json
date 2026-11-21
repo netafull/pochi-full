@@ -1,0 +1,27 @@
+{
+ "version": 1,
+ "site": "manga",
+ "site_name": "漫画ポチ",
+ "site_url": "https://manga.netaful.jp/",
+ "generated": "{D+0}T05:55:00+09:00",
+ "items": [
+  {
+   "id": "manga:m1",
+   "title": "サンプル作品A 第12話",
+   "url": "https://manga.netaful.jp/work/a/",
+   "date": "{D+0}",
+   "note": "最新話が更新",
+   "source": "manga",
+   "source_name": "漫画ポチ"
+  },
+  {
+   "id": "manga:m2",
+   "title": "サンプル作品B 第3話",
+   "url": "https://manga.netaful.jp/work/b/",
+   "date": "{D-1}",
+   "note": "最新話が更新",
+   "source": "manga",
+   "source_name": "漫画ポチ"
+  }
+ ]
+}

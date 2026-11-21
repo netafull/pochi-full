@@ -1,0 +1,26 @@
+{
+ "version": 1,
+ "site": "michinoeki",
+ "site_name": "道の駅ポチ",
+ "site_url": "https://michinoeki.netaful.jp/",
+ "generated": "{D+0}T05:55:00+09:00",
+ "items": [
+  {
+   "id": "michinoeki:r1",
+   "title": "サンプル道の駅（北海道）",
+   "url": "https://michinoeki.netaful.jp/station/r1/",
+   "date": "{D+0}",
+   "note": "新しく登録された駅",
+   "source": "michinoeki",
+   "source_name": "道の駅ポチ"
+  },
+  {
+   "id": "michinoeki:r2",
+   "title": "サンプル道の駅（長野県）",
+   "url": "https://michinoeki.netaful.jp/station/r2/",
+   "date": "{D-2}",
+   "source": "michinoeki",
+   "source_name": "道の駅ポチ"
+  }
+ ]
+}
