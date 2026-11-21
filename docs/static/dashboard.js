@@ -9,8 +9,9 @@ var PochiDash = (function () {
   // feed.json 自体は各20件のまま。ここに無い source は上限なし。
   // 漫画ポチは3件（オーナー決定 2026-11-21）。
   var SOURCE_CAP = { kaden: 6, apple: 6, manga: 3 };
-  // 巡回の帯の幅（日）。近い日付どうしは混ぜてよい（オーナー意向 2026-11-21）。今日・昨日（と未来日付）が1つ目の帯、2〜3日前が2つ目。
-  var BAND_DAYS = 2;
+  // 巡回の帯の幅（日）。表示する期間全体（3日前〜今日＋未来日付）を1つの帯にして、日付を問わず供給元ごとに巡回する
+  // （オーナー決定 2026-11-21。コンビニの新商品は発売日が特定の曜日に集まり、2日の帯では固まりが解けなかったため）。
+  var BAND_DAYS = KEEP_DAYS + 1;
   // 同じ帯の中で source を順番に1枚ずつ出すときの巡回順（チップの並びと同じ。固定なので結果は毎回同じ）。ここに無い source は後ろに初出順。
   var SOURCE_ORDER = ['shinkan', 'conbini', 'fastfood', 'cafe', 'sushi', 'cupmen', 'book', 'kaden', 'apple', 'manga', 'netaful'];
 
@@ -32,7 +33,7 @@ var PochiDash = (function () {
 
   // feeds: feed.json を読んだオブジェクトの配列（失敗したものは入れない）。
   // 日付の新しい順 → 3日より古いものを捨てる（未来日付は残す）→ id で重複除去 → SOURCE_CAP の source は新しいほうから上限件数まで。
-  // そのうえで、BAND_DAYS 日ずつの帯の中は source を SOURCE_ORDER の順に1枚ずつ巡回して並べる（各 source 内は元の新しい順のまま）。帯どうしは新しい順。
+  // そのうえで、帯（BAND_DAYS。いまは表示期間全体）の中は source を SOURCE_ORDER の順に1枚ずつ巡回して並べる（各 source 内は元の新しい順のまま）。帯どうしは新しい順。
   function mix(feeds, today) {
     var td = dayNum(today), floor = td - KEEP_DAYS, all = [], seq = 0;
     function band(d) { return Math.max(0, Math.floor((td - d) / BAND_DAYS)); }
