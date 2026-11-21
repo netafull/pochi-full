@@ -149,12 +149,12 @@ class LogicTest(unittest.TestCase):
         self.assertEqual(r, ["s1", "b1", "k1", "p1", "s2", "k2", "s3"])
         self.assertEqual(r, self.run_case(feeds=[early, late])["mixed"])  # feed の順を入れ替えても同じ
 
-    def test_mix_date_beats_round_robin(self):
+    def test_mix_round_robin_across_dates(self):
         f = {"generated": "2026-11-20T05:00:00+09:00", "items": [
             it("s_old", "shinkan", "2026-11-19"), it("s_new", "shinkan", "2026-11-20"), it("s_new2", "shinkan", "2026-11-20"),
             it("c_old", "conbini", "2026-11-18"), it("c_new", "conbini", "2026-11-20")]}
         r = self.run_case(feeds=[f])["mixed"]
-        self.assertEqual(r, ["s_new", "c_new", "s_new2", "s_old", "c_old"])
+        self.assertEqual(r, ["s_new", "c_new", "s_new2", "c_old", "s_old"])  # 帯は表示期間全体なので日付をまたいで巡回
 
     def test_mix_caps_with_round_robin(self):
         # 上限は「新しいほうから6件」を先に決め、その6件を巡回に回す（古い日の枠を新しい日が取る）
@@ -164,13 +164,13 @@ class LogicTest(unittest.TestCase):
         self.assertEqual([x for x in r if x.startswith("k")], [f"k{i}" for i in range(6)])
         self.assertEqual(r, ["s0", "k0", "s1", "k1", "s2", "k2", "k3", "k4", "k5"])  # 今日と昨日は同じ帯
 
-    def test_mix_band_two_days(self):
-        # 今日・昨日は1つの帯で巡回、2〜3日前は次の帯（帯どうしは新しい順）
+    def test_mix_band_whole_window(self):
+        # 表示期間全体が1つの帯。日付を問わず供給元ごとに巡回（各供給元の中は新しい順）
         f = {"generated": "", "items": [
             it("c1", "conbini", "2026-11-20"), it("c2", "conbini", "2026-11-20"), it("c3", "conbini", "2026-11-19"),
             it("s1", "shinkan", "2026-11-19"), it("c4", "conbini", "2026-11-18"), it("s2", "shinkan", "2026-11-17")]}
         r = self.run_case(feeds=[f])["mixed"]
-        self.assertEqual(r, ["s1", "c1", "c2", "c3", "s2", "c4"])
+        self.assertEqual(r, ["s1", "c1", "s2", "c2", "c3", "c4"])
 
     def test_mix_caps_manga(self):
         m = [it(f"m{i}", "manga", "2026-11-20") for i in range(8)]
