@@ -7,8 +7,11 @@ var PochiDash = (function () {
   var MAX_RUN = 2; // 同じ source は3枚以上連続させない
   // 表示の上限（新しい順に何件まで）。セール・入荷は新しい数件で足り、以降は似た顔ぶれが続くため（オーナー決定 2026-11-21）。
   // feed.json 自体は各20件のまま。ここに無い source は上限なし。
-  var SOURCE_CAP = { kaden: 6, apple: 6 };
-  // 同じ日の中で source を順番に1枚ずつ出すときの巡回順（チップの並びと同じ。固定なので結果は毎回同じ）。ここに無い source は後ろに初出順。
+  // 漫画ポチは3件（オーナー決定 2026-11-21）。
+  var SOURCE_CAP = { kaden: 6, apple: 6, manga: 3 };
+  // 巡回の帯の幅（日）。近い日付どうしは混ぜてよい（オーナー意向 2026-11-21）。今日・昨日（と未来日付）が1つ目の帯、2〜3日前が2つ目。
+  var BAND_DAYS = 2;
+  // 同じ帯の中で source を順番に1枚ずつ出すときの巡回順（チップの並びと同じ。固定なので結果は毎回同じ）。ここに無い source は後ろに初出順。
   var SOURCE_ORDER = ['shinkan', 'conbini', 'fastfood', 'cafe', 'sushi', 'cupmen', 'book', 'kaden', 'apple', 'netaful', 'manga', 'michinoeki'];
 
   function pad(n) { return (n < 10 ? '0' : '') + n; }
@@ -29,9 +32,10 @@ var PochiDash = (function () {
 
   // feeds: feed.json を読んだオブジェクトの配列（失敗したものは入れない）。
   // 日付の新しい順 → 3日より古いものを捨てる（未来日付は残す）→ id で重複除去 → SOURCE_CAP の source は新しいほうから上限件数まで。
-  // そのうえで、同じ日の中は source を SOURCE_ORDER の順に1枚ずつ巡回して並べる（各 source 内は元の新しい順のまま）。
+  // そのうえで、BAND_DAYS 日ずつの帯の中は source を SOURCE_ORDER の順に1枚ずつ巡回して並べる（各 source 内は元の新しい順のまま）。帯どうしは新しい順。
   function mix(feeds, today) {
-    var floor = dayNum(today) - KEEP_DAYS, all = [], seq = 0;
+    var td = dayNum(today), floor = td - KEEP_DAYS, all = [], seq = 0;
+    function band(d) { return Math.max(0, Math.floor((td - d) / BAND_DAYS)); }
     (feeds || []).forEach(function (f) {
       if (!f || !Array.isArray(f.items)) return;
       f.items.forEach(function (it) {
@@ -51,7 +55,7 @@ var PochiDash = (function () {
     var out = [], i = 0;
     while (i < kept.length) {
       var j = i, buckets = {}, names = [];
-      while (j < kept.length && kept[j].d === kept[i].d) {
+      while (j < kept.length && band(kept[j].d) === band(kept[i].d)) {
         var k = kept[j].it.source;
         if (!buckets[k]) { buckets[k] = []; names.push(k); }
         buckets[k].push(kept[j].it);
