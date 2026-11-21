@@ -66,8 +66,9 @@ class HtmlTest(unittest.TestCase):
     def test_chips(self):
         chips = re.findall(r'class="pf-chip" data-source="([a-z]+)"', self.html)
         self.assertEqual(chips, ["shinkan", "conbini", "fastfood", "cafe", "sushi", "cupmen", "book", "kaden", "apple",
-                                 "netaful", "manga", "michinoeki"])
-        for k in ("netaful", "manga", "michinoeki"):  # 新しい3つも既定でオン
+                                 "netaful", "manga"])
+        self.assertNotIn('data-source="michinoeki"', self.html)  # 道の駅ポチはディスカバーから外した（オーナー決定 2026-11-21）
+        for k in ("netaful", "manga"):  # 新しいものも既定でオン
             self.assertRegex(self.html, rf'data-source="{k}"[^>]*aria-pressed="true"')
 
     def test_heading_and_wp_url(self):
@@ -76,7 +77,7 @@ class HtmlTest(unittest.TestCase):
         self.assertIn("https://netaful.jp/wp-json/wp/v2/posts?tags=728&amp;per_page=20", self.html)
 
     def test_fallback_logos_exist(self):
-        for k in ("manga", "michinoeki"):
+        for k in ("manga",):
             self.assertIn(f'data-source="{k}"', self.html)
             self.assertIn(f'data-icon="/static/icons/{k}.png"', self.html)
             self.assertTrue((ROOT / f"docs/static/icons/{k}.png").is_file())
@@ -84,9 +85,8 @@ class HtmlTest(unittest.TestCase):
     def test_feeds(self):
         m = re.search(r'data-feeds="([^"]+)"', self.html)
         feeds = json.loads(m[1].replace("&quot;", '"'))
-        self.assertEqual(len(feeds), 7)
+        self.assertEqual(len(feeds), 6)
         self.assertIn("https://manga.netaful.jp/feed.json", feeds)
-        self.assertIn("https://michinoeki.netaful.jp/feed.json", feeds)
         self.assertTrue(all(re.match(r"^https://[a-z]+\.netaful\.jp/feed\.json$", f) for f in feeds))
 
     def test_links_view_unchanged_markup(self):
