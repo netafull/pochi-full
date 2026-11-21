@@ -172,6 +172,11 @@ class LogicTest(unittest.TestCase):
         r = self.run_case(feeds=[f])["mixed"]
         self.assertEqual(r, ["s1", "c1", "s2", "c2", "c3", "c4"])
 
+    def test_mix_caps_shinkan(self):
+        s = [it(f"s{i}", "shinkan", "2026-11-20") for i in range(20)]
+        r = self.run_case(feeds=[{"generated": "", "items": s}])["mixed"]
+        self.assertEqual(r, [f"s{i}" for i in range(12)])
+
     def test_mix_caps_manga(self):
         m = [it(f"m{i}", "manga", "2026-11-20") for i in range(8)]
         r = self.run_case(feeds=[{"generated": "", "items": m}])["mixed"]
