@@ -84,8 +84,8 @@ h2 {
 @media (min-width: 700px) { .dash-list { grid-template-columns: 1fr 1fr; } }
 @media (min-width: 960px) { .dash-list { grid-template-columns: 1fr 1fr 1fr; } }
 .dc {
-  display: flex; gap: 12px; min-width: 0; padding: 10px 12px 10px 10px; background: var(--card);
-  border: 1px solid var(--line); border-left: 6px solid var(--c, var(--accent)); border-radius: 12px;
+  display: flex; gap: 12px; min-width: 0; padding: 10px 12px; background: var(--card);
+  border: 1px solid var(--line); border-radius: 12px;
 }
 .dc-imglink { flex-shrink: 0; display: block; }
 .dc-thumb {
