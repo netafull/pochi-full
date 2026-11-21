@@ -136,7 +136,7 @@ class LogicTest(unittest.TestCase):
             it("b1", "b", "2026-11-20"), it("a1", "b", "2026-11-20"), it("old", "b", "2026-11-01")]}
         r = self.run_case(feeds=[f1, f2])["mixed"]
         # 未来が先頭、同日は source を順番に1枚ずつ（a→b）、重複a1は最初のものだけ、3日より古い(11-16, 11-01)は捨てる
-        self.assertEqual(r, ["fut", "a1", "b1", "a2"])
+        self.assertEqual(r, ["fut", "b1", "a1", "a2"])  # 今日・未来は同じ帯で巡回（a の中は新しい順）
 
     def test_mix_round_robin_same_date(self):
         # 同じ日は source を固定順（チップ順: shinkan, book, kaden, apple）に1枚ずつ。各 source 内は元の順。feed の generated は関係ない
@@ -162,7 +162,20 @@ class LogicTest(unittest.TestCase):
         s = [it(f"s{i}", "shinkan", "2026-11-19") for i in range(3)]
         r = self.run_case(feeds=[{"generated": "", "items": k + s}])["mixed"]
         self.assertEqual([x for x in r if x.startswith("k")], [f"k{i}" for i in range(6)])
-        self.assertEqual(r, ["k0", "k1", "s0", "k2", "s1", "k3", "s2", "k4", "k5"])
+        self.assertEqual(r, ["s0", "k0", "s1", "k1", "s2", "k2", "k3", "k4", "k5"])  # 今日と昨日は同じ帯
+
+    def test_mix_band_two_days(self):
+        # 今日・昨日は1つの帯で巡回、2〜3日前は次の帯（帯どうしは新しい順）
+        f = {"generated": "", "items": [
+            it("c1", "conbini", "2026-11-20"), it("c2", "conbini", "2026-11-20"), it("c3", "conbini", "2026-11-19"),
+            it("s1", "shinkan", "2026-11-19"), it("c4", "conbini", "2026-11-18"), it("s2", "shinkan", "2026-11-17")]}
+        r = self.run_case(feeds=[f])["mixed"]
+        self.assertEqual(r, ["s1", "c1", "c2", "c3", "s2", "c4"])
+
+    def test_mix_caps_manga(self):
+        m = [it(f"m{i}", "manga", "2026-11-20") for i in range(8)]
+        r = self.run_case(feeds=[{"generated": "", "items": m}])["mixed"]
+        self.assertEqual(r, ["m0", "m1", "m2"])
 
     def test_mix_caps_kaden_apple(self):
         # 家電・林檎は新しいほうから6件まで。他の source は上限なし
