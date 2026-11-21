@@ -41,6 +41,12 @@ CHIPS = [
     ("sushi", "sushi"), ("cupmen", "cupmen"), ("book", "kindle"), ("kaden", "kaden"), ("apple", "apple"),
     ("manga", "manga"), ("netaful", "netaful"),
 ]
+# チップとカードのバッジに出す短い名前（オーナー意向で「ポチ」を外す。ホームの一覧は sites.json の正式名のまま）
+CHIP_LABELS = {
+    "shinkan": "マンガ新刊", "conbini": "コンビニ", "fastfood": "ファストフード", "cafe": "カフェ",
+    "sushi": "回転寿司", "cupmen": "カップ麺", "book": "電書", "kaden": "家電", "apple": "林檎",
+    "manga": "漫画", "netaful": "ネタフル",
+}
 # ネタフル本体の記事（タグ728）は feed.json ではなく WordPress REST から読む。sites.json には無いのでチップ用の定義をここに持つ。
 NETAFUL = {"key": "netaful", "name": "ネタフル", "color": "#6B7A14"}
 NETAFUL_WP = "https://netaful.jp/wp-json/wp/v2/posts?tags=728&per_page=20&_fields=id,date,link,title,jetpack_featured_media_url"
@@ -125,17 +131,18 @@ TABS = """<div class="pf-tabs" id="pf-tabs" role="tablist" aria-label="表示の
 
 
 def chip(source, s):
+    name = escape(CHIP_LABELS.get(source, s["name"]))
     if s["key"] == "netaful":  # ロゴ無し。カードは色の帯だけになる
         return (
-            f'<button type="button" class="pf-chip" data-source="{source}" data-name="{escape(s["name"])}" '
+            f'<button type="button" class="pf-chip" data-source="{source}" data-name="{name}" '
             f'data-color="{escape(s["color"])}" data-icon="" aria-pressed="true" style="--c:{escape(s["color"])}">'
-            f'{escape(s["name"])}</button>'
+            f'{name}</button>'
         )
     icon = f"/static/icons/{s['key']}.png"
     return (
-        f'<button type="button" class="pf-chip" data-source="{source}" data-name="{escape(s["name"])}" '
+        f'<button type="button" class="pf-chip" data-source="{source}" data-name="{name}" '
         f'data-color="{escape(s["color"])}" data-icon="{icon}" aria-pressed="true" style="--c:{escape(s["color"])}">'
-        f'<img src="{icon}" alt="" width="20" height="20" loading="lazy" decoding="async">{escape(s["name"])}</button>'
+        f'<img src="{icon}" alt="" width="20" height="20" loading="lazy" decoding="async">{name}</button>'
     )
 
 

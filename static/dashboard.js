@@ -224,7 +224,9 @@ if (typeof document !== 'undefined') (function () {
     a.title = it.title; // 2行で切れたときの全文（カーソルを載せると出る）
     h.appendChild(a);
     body.appendChild(h);
-    if (it.note) body.appendChild(el('p', 'dc-note', it.note));
+    // brand（食ポチのチェーン名・メーカー名）は価格の前に出す
+    var note = [it.brand, it.note].filter(Boolean).join(' ');
+    if (note) body.appendChild(el('p', 'dc-note', note));
     li.appendChild(body);
     return li;
   }

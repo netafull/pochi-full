@@ -71,6 +71,12 @@ class HtmlTest(unittest.TestCase):
         for k in ("netaful", "manga"):  # 新しいものも既定でオン
             self.assertRegex(self.html, rf'data-source="{k}"[^>]*aria-pressed="true"')
 
+    def test_chip_labels_short(self):
+        names = re.findall(r'class="pf-chip" data-source="[a-z]+" data-name="([^"]+)"', self.html)
+        self.assertEqual(names, ["マンガ新刊", "コンビニ", "ファストフード", "カフェ", "回転寿司", "カップ麺", "電書",
+                                 "家電", "林檎", "漫画", "ネタフル"])  # チップから「ポチ」を外す（オーナー意向 2026-11-21）
+        self.assertIn("コンビニポチ", self.html)  # ホームの一覧は正式名のまま
+
     def test_heading_and_wp_url(self):
         self.assertIn('<h2 class="dash-h">ポチフルディスカバー</h2>', self.html)
         self.assertNotIn("最近の新着", self.html)
