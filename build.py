@@ -39,7 +39,7 @@ GA4_ID = "G-HF34XXVV03"
 CHIPS = [
     ("shinkan", "shinkan"), ("conbini", "conbini"), ("fastfood", "fastfood"), ("cafe", "cafe"),
     ("sushi", "sushi"), ("cupmen", "cupmen"), ("book", "kindle"), ("kaden", "kaden"), ("apple", "apple"),
-    ("netaful", "netaful"), ("manga", "manga"), ("michinoeki", "michinoeki"),
+    ("netaful", "netaful"), ("manga", "manga"),
 ]
 # ネタフル本体の記事（タグ728）は feed.json ではなく WordPress REST から読む。sites.json には無いのでチップ用の定義をここに持つ。
 NETAFUL = {"key": "netaful", "name": "ネタフル", "color": "#6B7A14"}
@@ -52,7 +52,6 @@ FEEDS = [
     "https://kaden.netaful.jp/feed.json",
     "https://apple.netaful.jp/feed.json",
     "https://manga.netaful.jp/feed.json",
-    "https://michinoeki.netaful.jp/feed.json",
 ]
 
 
