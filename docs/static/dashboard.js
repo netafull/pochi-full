@@ -5,6 +5,9 @@ var PochiDash = (function () {
   'use strict';
   var KEEP_DAYS = 3;
   var MAX_RUN = 2; // 同じ source は3枚以上連続させない
+  // 表示の上限（新しい順に何件まで）。セール・入荷は新しい数件で足り、以降は似た顔ぶれが続くため（オーナー決定 2026-11-21）。
+  // feed.json 自体は各20件のまま。ここに無い source は上限なし。
+  var SOURCE_CAP = { kaden: 6, apple: 6 };
 
   function pad(n) { return (n < 10 ? '0' : '') + n; }
   // 今日（JST）を YYYY-MM-DD で返す
@@ -24,6 +27,7 @@ var PochiDash = (function () {
 
   // feeds: feed.json を読んだオブジェクトの配列（失敗したものは入れない）。
   // 日付の新しい順（同じ日は generated の新しい feed、次に元の順）→ 3日より古いものを捨てる（未来日付は残す）→ id で重複除去。
+  // → SOURCE_CAP の source は新しいほうから上限件数まで。
   function mix(feeds, today) {
     var floor = dayNum(today) - KEEP_DAYS, all = [], seq = 0;
     (feeds || []).forEach(function (f) {
@@ -34,10 +38,13 @@ var PochiDash = (function () {
       });
     });
     all.sort(function (a, b) { return (b.d - a.d) || (b.g - a.g) || (a.n - b.n); });
-    var seen = {}, out = [];
+    var seen = {}, count = {}, out = [];
     all.forEach(function (x) {
       if (x.d < floor || seen[x.it.id]) return;
       seen[x.it.id] = true;
+      var s = x.it.source, cap = SOURCE_CAP[s];
+      if (cap !== undefined && (count[s] || 0) >= cap) return;
+      count[s] = (count[s] || 0) + 1;
       out.push(x.it);
     });
     return out;
