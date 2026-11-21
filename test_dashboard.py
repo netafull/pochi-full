@@ -117,6 +117,17 @@ class LogicTest(unittest.TestCase):
         # 未来が先頭、同日は generated が新しい feed が先、重複a1は最初のものだけ、3日より古い(11-16, 11-01)は捨てる
         self.assertEqual(r, ["fut", "b1", "a1", "a2"])
 
+    def test_mix_caps_kaden_apple(self):
+        # 家電・林檎は新しいほうから6件まで。他の source は上限なし
+        k = [it(f"k{i}", "kaden", "2026-11-20" if i < 4 else "2026-11-19") for i in range(10)]
+        a = [it(f"p{i}", "apple", "2026-11-20") for i in range(8)]
+        s = [it(f"s{i}", "shinkan", "2026-11-20") for i in range(9)]
+        f = {"generated": "2026-11-20T05:00:00+09:00", "items": k + a + s}
+        r = self.run_case(feeds=[f])["mixed"]
+        self.assertEqual([x for x in r if x.startswith("k")], [f"k{i}" for i in range(6)])
+        self.assertEqual([x for x in r if x.startswith("p")], [f"p{i}" for i in range(6)])
+        self.assertEqual(len([x for x in r if x.startswith("s")]), 9)
+
     def test_spread(self):
         seq = [it(f"x{i}", "x", "2026-11-20") for i in range(1, 5)] + [it("y1", "y", "2026-11-20"), it("z1", "z", "2026-11-20")]
         r = self.run_case(seq=seq)["spread"]
