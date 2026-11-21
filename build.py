@@ -100,8 +100,7 @@ def header(tag):
 
 
 FOOTER = """<footer class="site-footer">
-<p><a href="https://www.netaful.jp/">ネタフル</a>（https://www.netaful.jp/）が運営</p>
-<p>&copy; 2026 ネタフル</p>
+<p><a href="https://netaful.jp/">ネタフル</a></p>
 </footer>
 </body>
 </html>
