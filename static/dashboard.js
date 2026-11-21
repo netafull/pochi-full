@@ -8,6 +8,8 @@ var PochiDash = (function () {
   // 表示の上限（新しい順に何件まで）。セール・入荷は新しい数件で足り、以降は似た顔ぶれが続くため（オーナー決定 2026-11-21）。
   // feed.json 自体は各20件のまま。ここに無い source は上限なし。
   var SOURCE_CAP = { kaden: 6, apple: 6 };
+  // 同じ日の中で source を順番に1枚ずつ出すときの巡回順（チップの並びと同じ。固定なので結果は毎回同じ）。ここに無い source は後ろに初出順。
+  var SOURCE_ORDER = ['shinkan', 'conbini', 'fastfood', 'cafe', 'sushi', 'cupmen', 'book', 'kaden', 'apple', 'netaful', 'manga', 'michinoeki'];
 
   function pad(n) { return (n < 10 ? '0' : '') + n; }
   // 今日（JST）を YYYY-MM-DD で返す
@@ -26,28 +28,73 @@ var PochiDash = (function () {
   }
 
   // feeds: feed.json を読んだオブジェクトの配列（失敗したものは入れない）。
-  // 日付の新しい順（同じ日は generated の新しい feed、次に元の順）→ 3日より古いものを捨てる（未来日付は残す）→ id で重複除去。
-  // → SOURCE_CAP の source は新しいほうから上限件数まで。
+  // 日付の新しい順 → 3日より古いものを捨てる（未来日付は残す）→ id で重複除去 → SOURCE_CAP の source は新しいほうから上限件数まで。
+  // そのうえで、同じ日の中は source を SOURCE_ORDER の順に1枚ずつ巡回して並べる（各 source 内は元の新しい順のまま）。
   function mix(feeds, today) {
     var floor = dayNum(today) - KEEP_DAYS, all = [], seq = 0;
     (feeds || []).forEach(function (f) {
       if (!f || !Array.isArray(f.items)) return;
-      var gen = Date.parse(f.generated) || 0;
       f.items.forEach(function (it) {
-        if (validItem(it)) all.push({ it: it, d: dayNum(it.date), g: gen, n: seq++ });
+        if (validItem(it)) all.push({ it: it, d: dayNum(it.date), n: seq++ });
       });
     });
-    all.sort(function (a, b) { return (b.d - a.d) || (b.g - a.g) || (a.n - b.n); });
-    var seen = {}, count = {}, out = [];
+    all.sort(function (a, b) { return (b.d - a.d) || (a.n - b.n); });
+    var seen = {}, count = {}, kept = [];
     all.forEach(function (x) {
       if (x.d < floor || seen[x.it.id]) return;
       seen[x.it.id] = true;
       var s = x.it.source, cap = SOURCE_CAP[s];
       if (cap !== undefined && (count[s] || 0) >= cap) return;
       count[s] = (count[s] || 0) + 1;
-      out.push(x.it);
+      kept.push(x);
     });
+    var out = [], i = 0;
+    while (i < kept.length) {
+      var j = i, buckets = {}, names = [];
+      while (j < kept.length && kept[j].d === kept[i].d) {
+        var k = kept[j].it.source;
+        if (!buckets[k]) { buckets[k] = []; names.push(k); }
+        buckets[k].push(kept[j].it);
+        j++;
+      }
+      names.sort(function (a, b) { return rank(a, names) - rank(b, names); });
+      for (var left = j - i; left > 0;) {
+        names.forEach(function (k2) { if (buckets[k2].length) { out.push(buckets[k2].shift()); left--; } });
+      }
+      i = j;
+    }
     return out;
+  }
+  // 巡回順の位置。SOURCE_ORDER に無いものは、その日の初出順で後ろに並ぶ
+  function rank(k, names) {
+    var r = SOURCE_ORDER.indexOf(k);
+    return r >= 0 ? r : SOURCE_ORDER.length + names.indexOf(k);
+  }
+
+  // WordPress のタイトル（title.rendered）を平文にする。タグは落とし、実体参照は1回だけ戻す。
+  // 結果は textContent で表示するので、innerHTML には一切渡さない。
+  var NAMED = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: '\u00a0', hellip: '\u2026', ndash: '\u2013', mdash: '\u2014',
+    lsquo: '\u2018', rsquo: '\u2019', ldquo: '\u201c', rdquo: '\u201d' };
+  function decodeTitle(s) {
+    return String(s == null ? '' : s).replace(/<[^>]*>/g, '').replace(/&(?:#(\d+)|#[xX]([0-9a-fA-F]+)|([a-zA-Z]+));/g, function (m, dec, hex, name) {
+      if (name) return Object.prototype.hasOwnProperty.call(NAMED, name) ? NAMED[name] : m;
+      var cp = dec ? parseInt(dec, 10) : parseInt(hex, 16);
+      if (!(cp > 0 && cp <= 0x10ffff) || (cp >= 0xd800 && cp <= 0xdfff)) return m;
+      return cp > 0xffff ? String.fromCharCode(0xd800 + ((cp - 0x10000) >> 10), 0xdc00 + ((cp - 0x10000) & 0x3ff)) : String.fromCharCode(cp);
+    }).replace(/\s+/g, ' ').trim();
+  }
+
+  // ネタフルの WordPress REST（posts の配列）を feed-spec の feed オブジェクトにする。壊れた投稿は黙って捨てる。
+  function fromWp(posts) {
+    var items = [];
+    (Array.isArray(posts) ? posts : []).forEach(function (p) {
+      if (!p || p.id == null || !isHttp(p.link) || typeof p.date !== 'string') return;
+      var title = decodeTitle(p.title && p.title.rendered);
+      var it = { id: 'netaful:' + p.id, title: title, url: p.link, date: p.date.slice(0, 10), source: 'netaful', source_name: 'ネタフル' };
+      if (isHttp(p.jetpack_featured_media_url)) it.image = p.jetpack_featured_media_url;
+      if (validItem(it)) items.push(it);
+    });
+    return { version: 1, site: 'netaful', site_name: 'ネタフル', site_url: 'https://netaful.jp/', items: items };
   }
 
   // 同じ source が3枚以上連続しないよう、3枚目になるものを後ろの別 source の item と入れ替える。
@@ -73,7 +120,7 @@ var PochiDash = (function () {
     return spread(items.filter(function (it) { return !o[it.source]; }));
   }
 
-  return { jstToday: jstToday, mix: mix, spread: spread, visible: visible, isHttp: isHttp, dayNum: dayNum };
+  return { jstToday: jstToday, mix: mix, spread: spread, visible: visible, isHttp: isHttp, dayNum: dayNum, decodeTitle: decodeTitle, fromWp: fromWp };
 })();
 
 /* ---------------- 画面 ---------------- */
@@ -95,6 +142,7 @@ if (typeof document !== 'undefined') (function () {
   var chips = [].slice.call(document.querySelectorAll('.pf-chip'));
   var feedUrls = [];
   try { feedUrls = JSON.parse(dash.getAttribute('data-feeds')) || []; } catch (e) { feedUrls = []; }
+  var wpUrl = dash.getAttribute('data-wp') || '';
   var sites = {};
   chips.forEach(function (c) {
     sites[c.getAttribute('data-source')] = { name: c.getAttribute('data-name'), color: c.getAttribute('data-color'), icon: c.getAttribute('data-icon') };
@@ -205,7 +253,9 @@ if (typeof document !== 'undefined') (function () {
     loading = true;
     status.hidden = false;
     status.textContent = '新着を読み込み中…';
-    Promise.all(feedUrls.map(fetchFeed)).then(function (res) {
+    var jobs = feedUrls.map(fetchFeed);
+    if (wpUrl) jobs.push(fetchFeed(wpUrl).then(function (j) { return Array.isArray(j) ? PochiDash.fromWp(j) : null; }));
+    Promise.all(jobs).then(function (res) {
       mixed = PochiDash.mix(res.filter(Boolean), PochiDash.jstToday(Date.now()));
       loading = false;
       render();

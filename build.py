@@ -39,7 +39,11 @@ GA4_ID = "G-HF34XXVV03"
 CHIPS = [
     ("shinkan", "shinkan"), ("conbini", "conbini"), ("fastfood", "fastfood"), ("cafe", "cafe"),
     ("sushi", "sushi"), ("cupmen", "cupmen"), ("book", "kindle"), ("kaden", "kaden"), ("apple", "apple"),
+    ("netaful", "netaful"), ("manga", "manga"), ("michinoeki", "michinoeki"),
 ]
+# ネタフル本体の記事（タグ728）は feed.json ではなく WordPress REST から読む。sites.json には無いのでチップ用の定義をここに持つ。
+NETAFUL = {"key": "netaful", "name": "ネタフル", "color": "#6B7A14"}
+NETAFUL_WP = "https://netaful.jp/wp-json/wp/v2/posts?tags=728&per_page=20&_fields=id,date,link,title,jetpack_featured_media_url"
 # 読みに行く feed。食ポチ5サイトは新発売ポチの feed にまとまっている
 FEEDS = [
     "https://shinkan.netaful.jp/feed.json",
@@ -47,6 +51,8 @@ FEEDS = [
     "https://book.netaful.jp/feed.json",
     "https://kaden.netaful.jp/feed.json",
     "https://apple.netaful.jp/feed.json",
+    "https://manga.netaful.jp/feed.json",
+    "https://michinoeki.netaful.jp/feed.json",
 ]
 
 
@@ -121,6 +127,12 @@ TABS = """<div class="pf-tabs" id="pf-tabs" role="tablist" aria-label="表示の
 
 
 def chip(source, s):
+    if s["key"] == "netaful":  # ロゴ無し。カードは色の帯だけになる
+        return (
+            f'<button type="button" class="pf-chip" data-source="{source}" data-name="{escape(s["name"])}" '
+            f'data-color="{escape(s["color"])}" data-icon="" aria-pressed="true" style="--c:{escape(s["color"])}">'
+            f'{escape(s["name"])}</button>'
+        )
     icon = f"/static/icons/{s['key']}.png"
     return (
         f'<button type="button" class="pf-chip" data-source="{source}" data-name="{escape(s["name"])}" '
@@ -131,10 +143,11 @@ def chip(source, s):
 
 def dashboard(sites):
     by_key = {s["key"]: s for s in sites}
+    by_key["netaful"] = NETAFUL
     chips = "\n".join(chip(src, by_key[key]) for src, key in CHIPS)
     feeds = escape(json.dumps(FEEDS), quote=True)
-    return f"""<div id="view-dash" role="tabpanel" aria-labelledby="tab-dash" data-feeds="{feeds}" hidden>
-<h2 class="dash-h">最近の新着</h2>
+    return f"""<div id="view-dash" role="tabpanel" aria-labelledby="tab-dash" data-feeds="{feeds}" data-wp="{escape(NETAFUL_WP, quote=True)}" hidden>
+<h2 class="dash-h">ポチフルディスカバー</h2>
 <div class="pf-chips" role="group" aria-label="表示するポチ">
 {chips}
 </div>

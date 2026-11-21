@@ -44,8 +44,18 @@
 | source_name | ○ | 元のサイトの名前 |
 | icon | | 画像が無いときに出すアイコンの絶対URL（食ポチはカテゴリーのドット絵） |
 
-source のキー: `shinkan` `conbini` `fastfood` `cafe` `sushi` `cupmen` `book` `kaden` `apple`
+source のキー: `shinkan` `conbini` `fastfood` `cafe` `sushi` `cupmen` `book` `kaden` `apple` `manga` `michinoeki` `netaful`
 
 - 食ポチ5サイトの分は新発売ポチの feed.json にまとめて入れ、source に元のサイト（conbini など）を入れる。新発売ポチ自身はチップにしない。
 - items は新しい順、最大20件（新発売ポチは食ポチ5サイト分なので最大50件）。新着から3日より古いものは入れない（ポチフル側でも3日で切る）。発売予定で未来の日付は、マンガ新刊ポチの「明日発売」だけ。
 - 画像の決まり（オーナー決定）：Amazon の画像は出してよいが、**画像のリンクは Amazon の商品ページ**にする。題名のリンクは各ポチのページ。食ポチは公式画像を使わないので image は入れず、icon にカテゴリーのドット絵を入れる。
+
+## 追加の source（v1 の範囲、2026-11-21）
+
+- `manga`（漫画ポチ、`https://manga.netaful.jp/feed.json`）と `michinoeki`（道の駅ポチ、`https://michinoeki.netaful.jp/feed.json`）。形式は上と同じ。まだ無い間はポチフル側が黙って飛ばす（404・CORSエラーでも画面は壊れない）。image も icon も無い item は、サイトの色の帯＋ロゴで出す。
+- `netaful`（ネタフル）だけは feed.json ではなく、ブラウザが WordPress REST を直接読み、ポチフル側で feed の形に変換する。
+  - URL: `https://netaful.jp/wp-json/wp/v2/posts?tags=728&per_page=20&_fields=id,date,link,title,jetpack_featured_media_url`（`https://pochi.netaful.jp` への CORS 許可済み）
+  - 変換: id=`netaful:<投稿ID>` / title=`title.rendered`（タグを落とし HTML の実体参照を戻した平文。表示は textContent のみ）/ url=`link` / date=`date` の先頭10文字（JST）/ image=`jetpack_featured_media_url`（image_link は付けず、題名も画像も記事へ）/ source=`netaful`、source_name=`ネタフル`。
+
+## 並び順（ダッシュボード）
+日付の新しい順（未来日付も含む）が主。**同じ日の中は source を固定の順（チップの並び）に1枚ずつ巡回**し、各 source 内は feed の新しい順のまま。そのうえで同じ source が3枚以上続かないよう分散する。
