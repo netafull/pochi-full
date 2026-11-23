@@ -17,8 +17,8 @@ class BuildTest(unittest.TestCase):
         cls.html = (DOCS / "index.html").read_text(encoding="utf-8")
 
     def test_count(self):
-        self.assertEqual(len(self.sites), 15)
-        self.assertEqual(len({s["key"] for s in self.sites}), 15)
+        self.assertEqual(len(self.sites), 16)
+        self.assertEqual(len({s["key"] for s in self.sites}), 16)
 
     def test_group_order(self):
         self.assertEqual([g for g, _ in build.groups(self.sites)], GROUPS)
@@ -36,7 +36,7 @@ class BuildTest(unittest.TestCase):
     def test_index(self):
         for s in self.sites:
             self.assertIn(f'href="{s["url"]}"', self.html)
-        self.assertEqual(len(re.findall(r'<li class="pf-card"><a href="https://', self.html)), 15)
+        self.assertEqual(len(re.findall(r'<li class="pf-card"><a href="https://', self.html)), 16)
         self.assertEqual(self.html.count("<h1"), 1)
         self.assertIn('<link rel="canonical" href="https://pochi.netaful.jp/">', self.html)
 
@@ -45,7 +45,7 @@ class BuildTest(unittest.TestCase):
         data = [json.loads(b) for b in blocks]
         self.assertEqual({d["@type"] for d in data}, {"WebSite", "ItemList"})
         items = next(d for d in data if d["@type"] == "ItemList")["itemListElement"]
-        self.assertEqual(len(items), 15)
+        self.assertEqual(len(items), 16)
         self.assertTrue(all(i["url"] and i["name"] for i in items))
 
 

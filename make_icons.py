@@ -68,7 +68,7 @@ def rainbow_icon(color=None, variant="large", square=False):
 # pochi-branding 側の関数が使う icon() をこのスクリプトの中だけ差し替える(ファイルは書き換えない)
 make_branding.icon = rainbow_icon
 ogp_mod.icon = rainbow_icon
-TAGLINE = "ポチシリーズ全15サイトの一覧"
+TAGLINE = "ポチシリーズ全16サイトの一覧"
 
 OUT = Path(__file__).parent / "docs/static/assets"
 

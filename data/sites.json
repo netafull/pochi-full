@@ -88,6 +88,14 @@
     "color": "#6D4C41"
   },
   {
+    "key": "famires",
+    "name": "ファミレスポチ",
+    "url": "https://famires.netaful.jp/",
+    "group": "食べ物・新発売",
+    "description": "デニーズ・ジョナサンの期間限定フェアを記録",
+    "color": "#8E3B46"
+  },
+  {
     "key": "sushi",
     "name": "回転寿司ポチ",
     "url": "https://sushi.netaful.jp/",
