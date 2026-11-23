@@ -65,7 +65,7 @@ class HtmlTest(unittest.TestCase):
 
     def test_chips(self):
         chips = re.findall(r'class="pf-chip" data-source="([a-z]+)"', self.html)
-        self.assertEqual(chips, ["shinkan", "conbini", "fastfood", "cafe", "sushi", "cupmen", "book", "kaden", "apple",
+        self.assertEqual(chips, ["shinkan", "conbini", "fastfood", "cafe", "sushi", "cupmen", "famires", "book", "kaden", "apple",
                                  "manga", "netaful"])  # ネタフルは最後（オーナー意向）
         self.assertNotIn('data-source="michinoeki"', self.html)  # 道の駅ポチはディスカバーから外した（オーナー決定 2026-11-21）
         for k in ("netaful", "manga"):  # 新しいものも既定でオン
@@ -73,7 +73,7 @@ class HtmlTest(unittest.TestCase):
 
     def test_chip_labels_short(self):
         names = re.findall(r'class="pf-chip" data-source="[a-z]+" data-name="([^"]+)"', self.html)
-        self.assertEqual(names, ["マンガ新刊", "コンビニ", "ファストフード", "カフェ", "回転寿司", "カップ麺", "電書",
+        self.assertEqual(names, ["マンガ新刊", "コンビニ", "ファストフード", "カフェ", "回転寿司", "カップ麺", "ファミレス", "電書",
                                  "家電", "林檎", "漫画", "ネタフル"])  # チップから「ポチ」を外す（オーナー意向 2026-11-21）
         self.assertIn("コンビニポチ", self.html)  # ホームの一覧は正式名のまま
 
