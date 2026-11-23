@@ -38,13 +38,13 @@ GA4_ID = "G-HF34XXVV03"
 # ダッシュボード（feed-spec.md）。チップの source キー → sites.json の key（電書ポチだけ違う）
 CHIPS = [
     ("shinkan", "shinkan"), ("conbini", "conbini"), ("fastfood", "fastfood"), ("cafe", "cafe"),
-    ("sushi", "sushi"), ("cupmen", "cupmen"), ("book", "kindle"), ("kaden", "kaden"), ("apple", "apple"),
+    ("sushi", "sushi"), ("cupmen", "cupmen"), ("famires", "famires"), ("book", "kindle"), ("kaden", "kaden"), ("apple", "apple"),
     ("manga", "manga"), ("netaful", "netaful"),
 ]
 # チップとカードのバッジに出す短い名前（オーナー意向で「ポチ」を外す。ホームの一覧は sites.json の正式名のまま）
 CHIP_LABELS = {
     "shinkan": "マンガ新刊", "conbini": "コンビニ", "fastfood": "ファストフード", "cafe": "カフェ",
-    "sushi": "回転寿司", "cupmen": "カップ麺", "book": "電書", "kaden": "家電", "apple": "林檎",
+    "sushi": "回転寿司", "cupmen": "カップ麺", "famires": "ファミレス", "book": "電書", "kaden": "家電", "apple": "林檎",
     "manga": "漫画", "netaful": "ネタフル",
 }
 # ネタフル本体の記事（タグ728）は feed.json ではなく WordPress REST から読む。sites.json には無いのでチップ用の定義をここに持つ。
