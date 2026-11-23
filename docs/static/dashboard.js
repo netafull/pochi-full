@@ -14,7 +14,7 @@ var PochiDash = (function () {
   // （オーナー決定 2026-11-21。コンビニの新商品は発売日が特定の曜日に集まり、2日の帯では固まりが解けなかったため）。
   var BAND_DAYS = KEEP_DAYS + 1;
   // 同じ帯の中で source を順番に1枚ずつ出すときの巡回順（チップの並びと同じ。固定なので結果は毎回同じ）。ここに無い source は後ろに初出順。
-  var SOURCE_ORDER = ['shinkan', 'conbini', 'fastfood', 'cafe', 'sushi', 'cupmen', 'book', 'kaden', 'apple', 'manga', 'netaful'];
+  var SOURCE_ORDER = ['shinkan', 'conbini', 'fastfood', 'cafe', 'sushi', 'cupmen', 'famires', 'book', 'kaden', 'apple', 'manga', 'netaful'];
 
   function pad(n) { return (n < 10 ? '0' : '') + n; }
   // 今日（JST）を YYYY-MM-DD で返す
