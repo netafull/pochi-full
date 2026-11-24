@@ -98,8 +98,8 @@ class HtmlTest(unittest.TestCase):
     def test_links_view_unchanged_markup(self):
         # リンク集のカード・見出しは従来どおり（グループ4つ、カード15）
         panel = self.html.split('id="view-links"')[1].split('id="view-dash"')[0]
-        self.assertEqual(panel.count("<h2>"), 4)
-        self.assertEqual(panel.count('<li class="pf-card">'), 16)
+        self.assertEqual(panel.count("<h2>"), 5)
+        self.assertEqual(panel.count('<li class="pf-card">'), 17)
 
     def test_404_has_no_dashboard(self):
         self.assertNotIn("dashboard.js", (ROOT / "docs/404.html").read_text(encoding="utf-8"))

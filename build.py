@@ -164,7 +164,7 @@ def dashboard(sites):
 
 def build_index(sites):
     n = len(sites)
-    desc = f"ネタフルのポチシリーズ全{n}サイトをまとめて見られる一覧ページ。旅・おでかけ、セール・買い物、食べ物・新発売、マンガのポチをここから探せます。"
+    desc = f"ネタフルのポチシリーズ全{n}サイトをまとめて見られる一覧ページ。旅・おでかけ、セール・買い物、食べ物・新発売、マンガ、読みもののポチをここから探せます。"
     ld = [
         {"@context": "https://schema.org", "@type": "WebSite", "name": NAME, "url": BASE},
         {

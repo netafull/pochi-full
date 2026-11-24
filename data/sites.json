@@ -127,5 +127,13 @@
     "description": "コミック新刊の発売日を、まとめてチェック",
     "color": "#5E35B1",
     "icon": "manga-shinkan-pochi/static/assets/logo.png"
+  },
+  {
+    "key": "news",
+    "name": "ニュースポチ",
+    "url": "https://news.netaful.jp/",
+    "group": "読みもの",
+    "description": "ブログの新着を系統別にまとめて読む",
+    "color": "#3949AB"
   }
 ]
