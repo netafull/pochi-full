@@ -8,7 +8,6 @@ import shutil
 import sys
 from html import escape
 from pathlib import Path
-from urllib.parse import urlparse
 
 ROOT = Path(__file__).parent
 DOCS = ROOT / "docs"
@@ -114,18 +113,17 @@ FOOTER = """<footer class="site-footer">
 """
 
 
-def card(s, num):
-    """リンク集のカード（クーポン風）。num は表示順の通し番号。番号は装飾なので aria-hidden にして、
-    リンクのアクセシブルネームがサイト名から始まるようにする（スタブは DOM 上で先頭だが読み上げからは外れる）。"""
-    host = urlparse(s["url"]).hostname or ""
+# スタンプの傾き。表示順に -5, +4, -3 度を繰り返す（押したスタンプの手押し感）
+TILTS = ("-5deg", "4deg", "-3deg")
+
+
+def card(s, idx):
+    """リンク集のカード（スタンプカード風）。idx は表示順の通し番号（0始まり）で、アイコンの傾きを決める。"""
     return (
-        f'<li class="pf-card"><a href="{escape(s["url"])}" style="--c:{escape(s["color"])}">'
-        f'<span class="pf-stub" aria-hidden="true">'
-        f'<img src="/static/icons/{s["key"]}.png" alt="" width="46" height="46" loading="lazy" decoding="async">'
-        f'<span class="pf-no">No.{num:02d}</span></span>'
+        f'<li class="pf-card"><a href="{escape(s["url"])}" style="--c:{escape(s["color"])};--tilt:{TILTS[idx % len(TILTS)]}">'
+        f'<img src="/static/icons/{s["key"]}.png" alt="" width="56" height="56" loading="lazy" decoding="async">'
         f'<span class="pf-body"><span class="pf-name">{escape(s["name"])}</span>'
-        f'<span class="pf-desc">{escape(s["description"])}</span>'
-        f'<span class="pf-host">{escape(host)}</span></span></a></li>'
+        f'<span class="pf-desc">{escape(s["description"])}</span></span></a></li>'
     )
 
 
@@ -189,12 +187,12 @@ def build_index(sites):
     )
     parts = [head(TITLE, desc, BASE, extra), header("h1").replace("{n}", str(n)), "<main>\n", TABS,
              '<div id="view-links" role="tabpanel" aria-labelledby="tab-links">\n']
-    num = 0  # 表示順（グループ順）の通し番号
+    idx = 0  # 表示順（グループ順）の通し番号
     for g, items in groups(sites):
         parts.append(f'<section><h2>{escape(g)}</h2><ul class="pf-cards">\n')
         for s in items:
-            num += 1
-            parts.append(card(s, num) + "\n")
+            parts.append(card(s, idx) + "\n")
+            idx += 1
         parts.append("</ul></section>\n")
     parts.append("</div>\n" + dashboard(sites))
     parts.append("</main>\n" + FOOTER.replace("</body>", '<script src="/static/dashboard.js" defer></script>\n</body>'))
