@@ -46,30 +46,29 @@ class BuildTest(unittest.TestCase):
     def _cards(self):
         return re.findall(r'<li class="pf-card">.*?</li>', self.html, re.S)
 
-    def test_card_numbers_follow_display_order(self):
+    def test_cards_follow_display_order_with_tilt_cycle(self):
         cards = self._cards()
         self.assertEqual(len(cards), 17)
-        nums = [re.search(r'<span class="pf-no">No\.(\d+)</span>', c).group(1) for c in cards]
-        self.assertEqual(nums, [f"{i:02d}" for i in range(1, 18)])
         for c, s in zip(cards, self._display()):
             self.assertIn(f'href="{s["url"]}"', c)
         self.assertIn('href="https://michinoeki.netaful.jp/"', cards[0])
-        self.assertIn("No.01", cards[0])
         self.assertIn('href="https://news.netaful.jp/"', cards[-1])
-        self.assertIn("No.17", cards[-1])
+        tilts = [re.search(r"--tilt:([^;\"]+)", c).group(1) for c in cards]
+        cycle = ["-5deg", "4deg", "-3deg"]
+        self.assertEqual(tilts, [cycle[i % 3] for i in range(17)])
+        self.assertEqual(tilts[:4], ["-5deg", "4deg", "-3deg", "-5deg"])
 
-    def test_card_domain_and_a11y(self):
-        for c, s in zip(self._cards(), self._display()):
-            host = s["url"].split("//")[1].rstrip("/")
-            self.assertIn(f'<span class="pf-host">{host}</span>', c)
-            # 番号とアイコンのスタブは読み上げ対象外 → アクセシブルネームはサイト名から始まる
-            self.assertIn('<span class="pf-stub" aria-hidden="true">', c)
-            self.assertNotIn("No.", c.split('<span class="pf-body">')[1])
-
-    def test_card_css_has_no_left_accent(self):
+    def test_no_coupon_remains(self):
+        for c in self._cards():
+            for word in ("No.", "pf-stub", "pf-host", "pf-no", "dashed", "aria-hidden"):
+                self.assertNotIn(word, c)
+            self.assertIn('alt=""', c)
         css = (Path(__file__).parent / "static/style.css").read_text(encoding="utf-8")
-        for rule in re.findall(r"\.pf-card[^{]*\{[^}]*\}", css):
-            self.assertNotIn("border-left", rule)
+        for rule in re.findall(r"\.pf-[a-z]*[^{]*\{[^}]*\}", css):
+            if ".pf-card" in rule or ".pf-stub" in rule or ".pf-no" in rule or ".pf-host" in rule:
+                for word in ("dashed", "dotted", "color-mix", "pf-stub", "pf-host", "pf-no", "border-left"):
+                    self.assertNotIn(word, rule)
+        self.assertNotIn("pf-stub", css)
 
     def test_dashboard_markup_unchanged(self):
         self.assertIn('<ul class="dash-list" id="dash-list"></ul>', self.html)
