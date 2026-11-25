@@ -40,6 +40,42 @@ class BuildTest(unittest.TestCase):
         self.assertEqual(self.html.count("<h1"), 1)
         self.assertIn('<link rel="canonical" href="https://pochi.netaful.jp/">', self.html)
 
+    def _display(self):
+        return [s for _, items in build.groups(self.sites) for s in items]
+
+    def _cards(self):
+        return re.findall(r'<li class="pf-card">.*?</li>', self.html, re.S)
+
+    def test_card_numbers_follow_display_order(self):
+        cards = self._cards()
+        self.assertEqual(len(cards), 17)
+        nums = [re.search(r'<span class="pf-no">No\.(\d+)</span>', c).group(1) for c in cards]
+        self.assertEqual(nums, [f"{i:02d}" for i in range(1, 18)])
+        for c, s in zip(cards, self._display()):
+            self.assertIn(f'href="{s["url"]}"', c)
+        self.assertIn('href="https://michinoeki.netaful.jp/"', cards[0])
+        self.assertIn("No.01", cards[0])
+        self.assertIn('href="https://news.netaful.jp/"', cards[-1])
+        self.assertIn("No.17", cards[-1])
+
+    def test_card_domain_and_a11y(self):
+        for c, s in zip(self._cards(), self._display()):
+            host = s["url"].split("//")[1].rstrip("/")
+            self.assertIn(f'<span class="pf-host">{host}</span>', c)
+            # 番号とアイコンのスタブは読み上げ対象外 → アクセシブルネームはサイト名から始まる
+            self.assertIn('<span class="pf-stub" aria-hidden="true">', c)
+            self.assertNotIn("No.", c.split('<span class="pf-body">')[1])
+
+    def test_card_css_has_no_left_accent(self):
+        css = (Path(__file__).parent / "static/style.css").read_text(encoding="utf-8")
+        for rule in re.findall(r"\.pf-card[^{]*\{[^}]*\}", css):
+            self.assertNotIn("border-left", rule)
+
+    def test_dashboard_markup_unchanged(self):
+        self.assertIn('<ul class="dash-list" id="dash-list"></ul>', self.html)
+        self.assertEqual(self.html.count('class="pf-chip"'), 12)
+        self.assertIn('<h2 class="dash-h">ポチフルディスカバー</h2>', self.html)
+
     def test_jsonld(self):
         blocks = re.findall(r'<script type="application/ld\+json">(.*?)</script>', self.html, re.S)
         data = [json.loads(b) for b in blocks]

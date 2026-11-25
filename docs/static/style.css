@@ -31,23 +31,34 @@ h2 {
   padding-left: 10px; border-left: 4px solid var(--accent);
 }
 
-/* サイトカード: カード全体がリンク。左端にそのサイトの色のアクセント */
+/* サイトカード: カード全体がリンク。クーポン風（破線の切り取り線＋左のスタブ。スタブとの境目はミシン目）。
+   --c はサイト色。文字・線に使う色は、背景に対してコントラストが足りるよう明暗で少し調整する */
 .pf-cards { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; grid-template-columns: 1fr; }
 @media (min-width: 700px) { .pf-cards { grid-template-columns: 1fr 1fr; } }
 @media (min-width: 960px) { .pf-cards { grid-template-columns: 1fr 1fr 1fr; } }
 .pf-card { margin: 0; }
 .pf-card a {
-  display: flex; align-items: center; gap: 12px; height: 100%;
-  padding: 12px 14px 12px 12px; background: var(--card);
-  border: 1px solid var(--line); border-left: 6px solid var(--c, var(--accent));
-  border-radius: 12px; color: var(--text); text-decoration: none;
+  --cl: var(--c, var(--accent));
+  --cn: color-mix(in srgb, var(--cl) 80%, #000); /* 番号の文字色（白地で3:1以上） */
+  display: flex; align-items: stretch; height: 100%;
+  background: var(--card); border: 2px dashed var(--cl); border-radius: 10px;
+  color: var(--text); text-decoration: none;
 }
-.pf-card a:hover { background: var(--accent-soft); border-color: var(--c, var(--accent)); }
+@media (prefers-color-scheme: dark) {
+  .pf-card a { --cl: color-mix(in srgb, var(--c, var(--accent)) 55%, #fff); --cn: var(--cl); }
+}
+.pf-card a:hover { background: var(--accent-soft); }
 .pf-card a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.pf-card img { width: 48px; height: 48px; flex-shrink: 0; }
-.pf-card .pf-body { min-width: 0; }
+.pf-stub {
+  flex: 0 0 78px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  padding: 10px 6px; border-right: 2px dotted var(--cl);
+}
+.pf-card img { width: 46px; height: 46px; flex-shrink: 0; }
+.pf-no { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-weight: 700; font-size: 0.8rem; line-height: 1; color: var(--cn); }
+.pf-card .pf-body { flex: 1; min-width: 0; padding: 12px 14px; align-self: center; }
 .pf-card .pf-name { display: block; font-weight: 700; font-size: 1rem; line-height: 1.4; }
 .pf-card .pf-desc { display: block; margin-top: 2px; font-size: 0.85rem; line-height: 1.5; color: var(--muted); overflow-wrap: anywhere; }
+.pf-card .pf-host { display: block; margin-top: 4px; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.75rem; line-height: 1.4; color: var(--muted); overflow-wrap: anywhere; }
 
 .site-footer {
   border-top: 1px solid var(--line); padding: 16px; font-size: 0.8rem; color: var(--muted);
